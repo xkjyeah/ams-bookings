@@ -38,4 +38,9 @@ module.exports = {
 	babel: {
 		presets: ['es2015', 'stage-3']
   },
+	vue: {
+		loaders: {
+			'scss': 'style!css!sass'
+		}
+	}
 };
