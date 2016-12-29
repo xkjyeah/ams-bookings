@@ -1,0 +1,90 @@
+<head>
+	<script src="https://www.gstatic.com/firebasejs/3.6.4/firebase.js"></script>
+	<script src="dist/index.js">
+	   
+	</script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<style>
+		#root tbody tr:nth-child(even) td{
+			background-color: #dddddd;
+		}
+		#root tbody tr:nth-child(odd) td{
+			background-color: #eeeeee;
+		}
+		#root thead th{
+			background-color: #cccccc;
+		}
+		body, th, td {
+			font-family: calibri, sans-serif;
+		}
+	</style>
+</head>
+<body>
+	<div id="root">
+		<table>
+			<thead><tr>		
+				<th>Created At</th>
+				<th>Pickup Time</th>
+				<th>Patient Details</th>
+				
+				<th>Pickup Location</th>
+				<th>Drop-off Location</th>
+				<th>One/Two-Way</th>
+				<th>Wheelchair Stretcher</th>
+				<th>Oxygen Rate</th>
+				<th>Patient Weight</th>
+				
+				<th>Contact Person &amp; Details </th>
+				
+				<th>Precautions</th>
+			
+				<th>Accompanying Passengers</th>
+				<th>Appointment Time</th>
+				<th>Written in Book</th>
+				<th>Reply</th>
+				
+			</tr></thead>
+			<tbody><tr v-for="booking in bookings">
+				<td>{{booking.createdAt}}</td>
+				<td>{{booking.pickupTime}}</td>
+				<td>{{booking.patientName}},<br>
+					{{booking.patientGender}}
+					({{booking.patientNric}})</td>
+				
+				<td>{{booking.pickupLocation}}</td>
+				<td>{{booking.dropoffLocation}}</td>
+				<td>{{booking.twoWay}}</td>
+				<td>{{booking.wheelchairStretcher}}</td>
+				<td>{{booking.oxygenRate}}</td>
+				<td>{{booking.patientWeight}}</td>
+				
+				<td>{{booking.contactPerson}}
+				{{booking.contactPhone}}
+				{{booking.contactEmail}}</td>
+				
+				<td>{{booking.precautions}}</td>
+			
+				<td>{{booking.accompanyingPassengers}}</td>
+				<td>{{booking.appointmentTime}}</td>
+				
+				<td><label><input type="checkbox"
+				@change="noted($event,booking)"
+				:checked="booking.noted">noted</label></td>
+				
+				<td><button @click="reply(booking)">
+				reply
+				</button></td>
+				
+			</tr></tbody>
+		</table>
+		<button @click="login">
+		login
+		</button>
+		<reply-dialogue :open="replyDialogueOpen"
+			:booking="currentBooking"
+			@close="replyDialogueOpen=false"></reply-dialogue>
+		
+		
+		
+	</div>
+</body>
