@@ -48,5 +48,6 @@ export default {
 .display-with-scribbles input[type="text"] {
   background: transparent;
   border: solid 1px #ddd;
+  width: 100%;
 }
 </style>

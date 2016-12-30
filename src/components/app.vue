@@ -121,7 +121,7 @@
               v-if="booking.scribbles">
             <td>
             </td>
-            <td>
+            <td colspan="2">
               <display-with-scribbles
                   type="textarea"
                   :scribble="booking.scribbles"
@@ -129,16 +129,16 @@
                   field="pickupTime">
               </display-with-scribbles>
             </td>
-            <td>
+            <!-- <td>
               <display-with-scribbles
                   type="textarea"
                   :scribble="booking.scribbles"
                   @changed="updateScribble(booking, $event.field, $event.value)"
                   field="patientName">
               </display-with-scribbles>
-            </td>
+            </td> -->
 
-            <td>
+            <td colspan="2">
               <display-with-scribbles
                   type="textarea"
                   :scribble="booking.scribbles"
@@ -146,15 +146,15 @@
                   field="pickupLocation">
               </display-with-scribbles>
             </td>
-            <td>
+            <!-- <td>
               <display-with-scribbles
                   type="textarea"
                   :scribble="booking.scribbles"
                   @changed="updateScribble(booking, $event.field, $event.value)"
                   field="dropoffLocation">
               </display-with-scribbles>
-            </td>
-            <td>
+            </td> -->
+            <td colspan="4">
               <display-with-scribbles
                   type="textarea"
                   :scribble="booking.scribbles"
@@ -162,7 +162,7 @@
                   field="twoWay">
               </display-with-scribbles>
             </td>
-            <td>
+            <!-- <td>
               <display-with-scribbles
                   type="textarea"
                   :scribble="booking.scribbles"
@@ -185,7 +185,7 @@
                   @changed="updateScribble(booking, $event.field, $event.value)"
                   field="patientWeight">
               </display-with-scribbles>
-            </td>
+            </td> -->
 
             <td>
               <display-with-scribbles
