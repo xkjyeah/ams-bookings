@@ -12,18 +12,22 @@
       </button>
     </div>
 
-    <div>
-      <h2>Date Range</h2>
-      <button class="btn btn-primary" :class="{active: dateRangeType == 'future'}"
-        @click="dateRangeType = 'future'">
-        Future
-      </button>
-      <button class="btn btn-primary" :class="{active: dateRangeType == 'custom'}"
-        @click="dateRangeType = 'custom'">
-        Custom
-      </button>
-      <date-picker :month="now" :today="now" :disabled="dateRangeType !== 'custom'"
-        @daterange_changed="updateDateRange"></date-picker>
+    <div class="r">
+      <div class="c">
+        <h2>Date Range</h2>
+        <button class="btn btn-primary date-range-type" :class="{active: dateRangeType == 'future'}"
+          @click="dateRangeType = 'future'">
+          Future
+        </button><br/>
+        <button class="btn btn-primary date-range-type" :class="{active: dateRangeType == 'custom'}"
+          @click="dateRangeType = 'custom'">
+          Custom
+        </button>
+      </div>
+      <div class="c">
+        <date-picker :month="now" :today="now" :disabled="dateRangeType !== 'custom'"
+          @daterange_changed="updateDateRange"></date-picker>
+      </div>
     </div>
 
     <table class="table table-striped-custom">
@@ -47,7 +51,7 @@
           <th>Accompanying Passengers</th>
           <th>Appointment Time</th>
           <th>Cancel</th>
-          <!-- <th>Reply</th> -->
+          <th></th>
 
         </tr>
       </thead>
@@ -196,7 +200,7 @@
               </display-with-scribbles>
             </td>
 
-            <td>
+            <td colspan="3">
               <display-with-scribbles
                   type="textarea"
                   :scribble="booking.scribbles"
@@ -205,7 +209,7 @@
               </display-with-scribbles>
             </td>
 
-            <td>
+            <!-- <td>
               <display-with-scribbles
                   type="textarea"
                   :scribble="booking.scribbles"
@@ -220,7 +224,7 @@
                   @changed="updateScribble(booking, $event.field, $event.value)"
                   field="appointmentTime">
               </display-with-scribbles>
-            </td>
+            </td> -->
             <td>
             </td>
             <td>
@@ -389,8 +393,30 @@ export default {
 }
 </script>
 
-<style>
-.table.table-striped-custom tr:not(.is-odd) {
-  background-color: #f9f9f9;
+<style lang="scss">
+.table.table-striped-custom thead tr {
+  background-color: rgb(77, 208, 225);
+  td {
+    color: black;
+  }
+}
+.table.table-striped-custom tbody {
+  tr.is-odd {
+    background-color: rgb(224, 247, 250);
+  }
+  td {
+    color: black;
+  }
+}
+
+.r {
+  flex-direction: row;
+  display: inline-flex;
+  .c {
+    flex: 0 0 auto;
+  }
+}
+.date-range-type {
+  width: 6em;
 }
 </style>
