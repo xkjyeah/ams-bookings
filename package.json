@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "http-server -c-1 ."
+    "start": "http-server -c-1 .",
+    "deploy": "webpack && shx mkdir -p out && shx cp index.html out && shx cp -r dist out && gh-pages -d out"
   },
   "author": "",
   "license": "ISC",
@@ -14,6 +15,7 @@
     "http-server": "^0.9.0",
     "moment": "^2.17.1",
     "node-sass": "^4.1.1",
-    "sass-loader": "^4.1.1"
+    "sass-loader": "^4.1.1",
+    "shx": "^0.2.1"
   }
 }
