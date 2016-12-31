@@ -34573,7 +34573,7 @@
 	
 	
 	// module
-	exports.push([module.id, "\n.table.table-striped-custom thead tr {\n  background-color: #4dd0e1;\n}\n.table.table-striped-custom thead tr td {\n    color: black;\n}\n.table.table-striped-custom tbody tr.is-odd {\n  background-color: #e0f7fa;\n}\n.table.table-striped-custom tbody td {\n  color: black;\n}\n.r {\n  flex-direction: row;\n  display: inline-flex;\n}\n.r .c {\n    flex: 0 0 auto;\n}\n.date-range-type {\n  width: 6em;\n}\n", ""]);
+	exports.push([module.id, "\n.table.table-striped-custom thead tr {\n  background-color: #4dd0e1;\n}\n.table.table-striped-custom thead tr td {\n    color: black;\n}\n.table.table-striped-custom thead tr th.sortable:hover {\n    background-color: #DDD;\n}\n.table.table-striped-custom tbody tr.is-odd {\n  background-color: #e0f7fa;\n}\n.table.table-striped-custom tbody tr td {\n  color: black;\n}\n.table.table-striped-custom tbody tr.cancelled td {\n  text-decoration: line-through;\n  color: #888;\n}\n.r {\n  flex-direction: row;\n  display: inline-flex;\n}\n.r .c {\n    flex: 0 0 auto;\n}\n.date-range-type {\n  width: 10em;\n}\n", ""]);
 	
 	// exports
 
@@ -35140,6 +35140,14 @@
 	//
 	//
 	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
 	
 	var _moment = __webpack_require__(314);
 	
@@ -35185,9 +35193,11 @@
 	      bookings: [],
 	      currentBooking: null,
 	      replyDialogueOpen: false,
+	      filterBy: 'pickupTime',
 	      orderBy: 'pickupTime',
 	      order: 'asc',
 	      now: null,
+	      today: null,
 	
 	      dateRangeType: 'future',
 	      dateRange: null
@@ -35202,16 +35212,20 @@
 	  watch: {
 	    dateRangeType: function dateRangeType() {
 	      this.reload();
+	    },
+	    filterBy: function filterBy() {
+	      this.reload();
 	    }
 	  },
 	  methods: {
 	    updateMonth: function updateMonth() {
-	      this.now = new Date().setHours(0, 0, 0, 0);
+	      this.today = new Date().setHours(0, 0, 0, 0);
+	      this.now = Date.now();
 	    },
 	    reload: function reload() {
 	      var _this = this;
 	
-	      var query = firebase.database().ref('bookings').orderByChild(this.orderBy);
+	      var query = firebase.database().ref('bookings').orderByChild(this.filterBy);
 	
 	      if (this.dateRangeType === 'future') {
 	        query = query.startAt((0, _moment2.default)(this.now).startOf('day').toISOString());
@@ -51104,12 +51118,14 @@
 	      disabled: _vm.disabled
 	    }
 	  }, [_c('caption', [_c('button', {
+	    staticClass: "btn btn-default",
 	    on: {
 	      "click": function($event) {
 	        _vm.addMonth(-1)
 	      }
 	    }
 	  }, [_vm._v("<")]), _vm._v("\r\n    " + _vm._s(_vm.monthMoment.format('MMMM')) + "\r\n    "), _c('button', {
+	    staticClass: "btn btn-default",
 	    on: {
 	      "click": function($event) {
 	        _vm.addMonth(1)
@@ -51188,6 +51204,26 @@
 	  }, [_c('h2', [_vm._v("Date Range")]), _vm._v(" "), _c('button', {
 	    staticClass: "btn btn-primary date-range-type",
 	    class: {
+	      active: _vm.filterBy == 'pickupTime'
+	    },
+	    on: {
+	      "click": function($event) {
+	        _vm.filterBy = 'pickupTime'
+	      }
+	    }
+	  }, [_vm._v("\n        Pick-up Time\n      ")]), _vm._v(" "), _c('button', {
+	    staticClass: "btn btn-primary date-range-type",
+	    class: {
+	      active: _vm.filterBy == 'createdAt'
+	    },
+	    on: {
+	      "click": function($event) {
+	        _vm.filterBy = 'createdAt'
+	      }
+	    }
+	  }, [_vm._v("\n        Submission Time\n      ")]), _vm._v(" "), _c('br'), _c('Br'), _vm._v(" "), _c('button', {
+	    staticClass: "btn btn-primary date-range-type",
+	    class: {
 	      active: _vm.dateRangeType == 'future'
 	    },
 	    on: {
@@ -51195,7 +51231,7 @@
 	        _vm.dateRangeType = 'future'
 	      }
 	    }
-	  }, [_vm._v("\n        Future\n      ")]), _c('br'), _vm._v(" "), _c('button', {
+	  }, [_vm._v("\n        Today + Future\n      ")]), _vm._v(" "), _c('button', {
 	    staticClass: "btn btn-primary date-range-type",
 	    class: {
 	      active: _vm.dateRangeType == 'custom'
@@ -51205,12 +51241,12 @@
 	        _vm.dateRangeType = 'custom'
 	      }
 	    }
-	  }, [_vm._v("\n        Custom\n      ")])]), _vm._v(" "), _c('div', {
+	  }, [_vm._v("\n        Custom\n      ")])], 1), _vm._v(" "), _c('div', {
 	    staticClass: "c"
 	  }, [_c('date-picker', {
 	    attrs: {
-	      "month": _vm.now,
-	      "today": _vm.now,
+	      "month": _vm.today,
+	      "today": _vm.today,
 	      "disabled": _vm.dateRangeType !== 'custom'
 	    },
 	    on: {
