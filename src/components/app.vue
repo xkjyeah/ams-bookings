@@ -41,6 +41,7 @@
     <table class="table table-striped-custom">
       <thead>
         <tr>
+          <th></th>
           <th class="sortable" :class="{active: orderBy == 'createdAt'}" @click="toggleOrder('createdAt')">Created At</th>
           <th class="sortable" :class="{active: orderBy == 'pickupTime'}" @click="toggleOrder('pickupTime')">Pickup Time</th>
           <th>Patient Details</th>
@@ -66,12 +67,11 @@
       <tbody>
         <template v-for="(booking, index) in sortedBookings">
           <tr :class="{cancelled: booking.cancelled, read: booking.read, 'is-odd': (index % 2)}">
+            <td @click="read(booking)" class="read-cell">
+              {{booking.read ? '\u00a0' : '\u2709'}}
+            </td>
             <td :title="formatTime(booking.createdAt)">
               {{formatTimePast(booking.createdAt, now)}} ago
-
-              <button @click="read(booking)" class="btn btn-default">
-                {{booking.read ? ' ' : '\u2709'}}
-              </button>
             </td>
             <td>
                 {{filters.formatTime(booking.pickupTime)}}
@@ -139,6 +139,8 @@
 
           <tr :class="{'is-odd': (index % 2)}"
               v-if="booking.scribbles">
+            <td>
+            </td>
             <td>
             </td>
             <td colspan="2">
@@ -507,6 +509,10 @@ export default {
         color: #888;
       }
     }
+  }
+  td.read-cell:hover {
+    background-color: #DDD;
+    cursor: pointer;
   }
 }
 
