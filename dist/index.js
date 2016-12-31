@@ -54058,7 +54058,9 @@
 	          _vm.startScribbling(booking)
 	        }
 	      }
-	    }, [_vm._v("\n              Scribble\n            ")])])]), _vm._v(" "), (booking.scribbles) ? _c('tr', {
+	    }, [_c('i', {
+	      staticClass: "glyphicon glyphicon-pencil"
+	    })])])]), _vm._v(" "), (booking.scribbles) ? _c('tr', {
 	      class: {
 	        'is-odd': (index % 2)
 	      }
