@@ -16,6 +16,7 @@
     "moment": "^2.17.1",
     "node-sass": "^4.1.1",
     "sass-loader": "^4.1.1",
-    "shx": "^0.2.1"
+    "shx": "^0.2.1",
+    "vue-resource": "^1.0.3"
   }
 }

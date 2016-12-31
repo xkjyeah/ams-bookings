@@ -1,6 +1,7 @@
 import * as firebase from 'firebase';
 import _ from 'lodash';
 import Vue from 'vue/dist/vue';
+import VueResource from 'vue-resource';
 import App from './components/app.vue';
 import * as filters from './utils/filters'
 import moment from 'moment';
@@ -13,7 +14,12 @@ import moment from 'moment';
     messagingSenderId: "245600362111"
 });
 
+window.gapiPromise = new Promise((resolve) => {
+  gapi.client.load('calendar', 'v3', () => resolve(gapi));
+})
+
 document.addEventListener('DOMContentLoaded', () => {
+  Vue.use(VueResource);
   Vue.component('myApp', App);
 
   _.forEach(filters, (f, name) => Vue.filter(name, f))

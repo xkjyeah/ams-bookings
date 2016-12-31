@@ -33,6 +33,14 @@ module.exports = {
 					presets: ['es2015', 'stage-3'],
 				}
 			},
+			{
+				test: /\.(png|gif|jpg|jpeg)$/,
+				loader: "url",
+				query: {
+					limit: 10000,
+          name: '[name].[ext]?[hash:7]',
+				}
+			}
 		],
 	},
 	babel: {

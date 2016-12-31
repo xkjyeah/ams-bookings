@@ -70,7 +70,7 @@
               {{formatTimePast(booking.createdAt, now)}} ago
             </td>
             <td>
-                {{booking.pickupTime | formatTime}}
+                {{filters.formatTime(booking.pickupTime)}}
             </td>
             <td>
               {{booking.patientName}},<br>
@@ -120,6 +120,10 @@
                   @change="cancel($event,booking)"
                   :checked="booking.cancelled">Cancelled
               </label>
+              <a v-if="booking.googleCalendarId"
+                  @click="goToCalendar(booking)">
+                <img src="static/img/calendar-icon.png" width="16" height="16"/>
+              </a>
             </td>
             <td>
               <button @click="startScribbling(booking)"
@@ -258,6 +262,7 @@ import DisplayWithScribbles from './display-with-scribbles.vue';
 import ReplyDialog from './dialogue.vue';
 import Calendar from './calendar.vue';
 import * as filters from '../utils/filters'
+import assert from 'assert';
 
 export default {
   components: {
@@ -268,6 +273,8 @@ export default {
   data() {
     return {
       user: null,
+      credential: null,
+
       bookings: [],
       currentBooking: null,
       replyDialogueOpen: false,
@@ -276,6 +283,10 @@ export default {
       order: 'asc',
       now: null,
       today: null,
+
+      filters: {
+        ...filters
+      }, /* Convenience methods */
 
       dateRangeType: 'future',
       dateRange: null,
@@ -292,6 +303,9 @@ export default {
     },
     filterBy() {
       this.reload();
+    },
+    'credential.accessToken'(at) {
+      gapiPromise.then(() => gapi.auth.setToken({access_token: at}))
     }
   },
   methods: {
@@ -333,6 +347,7 @@ export default {
     },
     login(){
       var provider = new firebase.auth.GoogleAuthProvider();
+      provider.addScope('https://www.googleapis.com/auth/calendar');
       firebase.auth().signInWithRedirect(provider)
     },
     logout() {
@@ -340,9 +355,24 @@ export default {
     },
     cancel($event, booking) {
       booking.cancelled = $event.target.checked;
+
+      /* update firebase */
       firebase.database()
       .ref(`bookings/${booking.id}/cancelled`)
       .set(booking.cancelled)
+      /* update google calendar */
+      if (booking.googleCalendarId) {
+        gapi.client.calendar.events.patch({
+          calendarId: 'primary',
+          eventId: booking.googleCalendarId
+        }, {
+          status: booking.cancelled ? 'cancelled' : 'confirmed'
+        })
+        .then(response => {
+          assert(response.status === 200)
+          return JSON.parse(response.body)
+        })
+      }
     },
     reply(booking){
       this.currentBooking=booking;
@@ -395,7 +425,21 @@ export default {
       })
 
       this.syncTasks = {}
-    }, 2000, {trailing: true, leading: false})
+    }, 2000, {trailing: true, leading: false}),
+    goToCalendar(booking) {
+      gapi.client.calendar.events.get({
+        calendarId: 'primary',
+        eventId: booking.googleCalendarId
+      })
+      .then(response => {
+        assert(response.status === 200)
+        return JSON.parse(response.body)
+      })
+      .then(response => {
+        console.log(response);
+        //window.location.href = response.htmlLink;
+      })
+    }
   },
   created() {
     this.updateMonth();
@@ -403,6 +447,19 @@ export default {
       this.user = user;
       this.reload();
     });
+
+    if (window.localStorage['g-credential']) {
+      try {
+        this.credential = JSON.parse(window.localStorage['g-credential'])
+      } catch (err) {}
+    }
+
+    firebase.auth().getRedirectResult().then((result) => {
+      if (result.credential) {
+        this.credential = result.credential;
+        window.localStorage['g-credential'] = JSON.stringify(this.credential);
+      }
+    })
   },
 }
 </script>
