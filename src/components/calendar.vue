@@ -1,9 +1,9 @@
 <template>
 <table class="calendar" :class="{disabled: disabled}">
   <caption>
-    <button @click="addMonth(-1)">&lt;</button>
+    <button @click="addMonth(-1)" class="btn btn-default">&lt;</button>
     {{monthMoment.format('MMMM')}}
-    <button @click="addMonth(1)">&gt;</button>
+    <button @click="addMonth(1)" class="btn btn-default">&gt;</button>
   </caption>
   <thead>
     <tr>

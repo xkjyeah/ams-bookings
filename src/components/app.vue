@@ -11,14 +11,22 @@
         Logout
       </button>
     </div>
-
     <div class="r">
       <div class="c">
         <h2>Date Range</h2>
+        <button class="btn btn-primary date-range-type" :class="{active: filterBy == 'pickupTime'}"
+          @click="filterBy = 'pickupTime'">
+          Pick-up Time
+        </button>
+        <button class="btn btn-primary date-range-type" :class="{active: filterBy == 'createdAt'}"
+          @click="filterBy = 'createdAt'">
+          Submission Time
+        </button>
+        <br/><Br/>
         <button class="btn btn-primary date-range-type" :class="{active: dateRangeType == 'future'}"
           @click="dateRangeType = 'future'">
-          Future
-        </button><br/>
+          Today + Future
+        </button>
         <button class="btn btn-primary date-range-type" :class="{active: dateRangeType == 'custom'}"
           @click="dateRangeType = 'custom'">
           Custom
@@ -263,6 +271,7 @@ export default {
       bookings: [],
       currentBooking: null,
       replyDialogueOpen: false,
+      filterBy: 'pickupTime',
       orderBy: 'pickupTime',
       order: 'asc',
       now: null,
@@ -280,6 +289,9 @@ export default {
   watch: {
     dateRangeType() {
       this.reload();
+    },
+    filterBy() {
+      this.reload();
     }
   },
   methods: {
@@ -289,7 +301,7 @@ export default {
     },
     reload(){
       var query = firebase.database().ref('bookings')
-        .orderByChild(this.orderBy)
+        .orderByChild(this.filterBy)
 
       if (this.dateRangeType === 'future') {
         query = query.startAt(
@@ -419,6 +431,6 @@ export default {
   }
 }
 .date-range-type {
-  width: 6em;
+  width: 10em;
 }
 </style>
