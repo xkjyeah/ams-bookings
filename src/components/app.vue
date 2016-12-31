@@ -22,7 +22,7 @@
         @click="dateRangeType = 'custom'">
         Custom
       </button>
-      <date-picker :month="now" :today="now" :disabled="dateRangeType !== 'custom'"
+      <date-picker :month="today" :today="today" :disabled="dateRangeType !== 'custom'"
         @daterange_changed="updateDateRange"></date-picker>
     </div>
 
@@ -262,6 +262,7 @@ export default {
       orderBy: 'pickupTime',
       order: 'asc',
       now: null,
+      today: null,
 
       dateRangeType: 'future',
       dateRange: null,
@@ -279,7 +280,8 @@ export default {
   },
   methods: {
     updateMonth() {
-      this.now = new Date().setHours(0,0,0,0);
+      this.today = new Date().setHours(0,0,0,0);
+      this.now = Date.now();
     },
     reload(){
       var query = firebase.database().ref('bookings')
