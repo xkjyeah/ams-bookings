@@ -8222,6 +8222,10 @@
 	
 	var _moment2 = _interopRequireDefault(_moment);
 	
+	var _assert = __webpack_require__(442);
+	
+	var _assert2 = _interopRequireDefault(_assert);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
@@ -8235,9 +8239,17 @@
 	});
 	
 	window.gapiPromise = new Promise(function (resolve) {
-	  gapi.client.load('calendar', 'v3', function () {
-	    return resolve(gapi);
-	  });
+	  window.checkAuth = function () {
+	    (0, _assert2.default)(gapi);
+	    gapi.client.load('calendar', 'v3', function () {
+	      return resolve(gapi);
+	    });
+	  };
+	  if (typeof gapi !== 'undefined') {
+	    gapi.client.load('calendar', 'v3', function () {
+	      return resolve(gapi);
+	    });
+	  }
 	});
 	
 	document.addEventListener('DOMContentLoaded', function () {
@@ -26027,7 +26039,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/*!
-	 * Vue.js v2.1.7
+	 * Vue.js v2.1.8
 	 * (c) 2014-2016 Evan You
 	 * Released under the MIT License.
 	 */
@@ -26114,10 +26126,10 @@
 	 */
 	function cached (fn) {
 	  var cache = Object.create(null);
-	  return function cachedFn (str) {
+	  return (function cachedFn (str) {
 	    var hit = cache[str];
 	    return hit || (cache[str] = fn(str))
-	  }
+	  })
 	}
 	
 	/**
@@ -27332,7 +27344,7 @@
 	    }
 	    for (var i = 0; i < type.length && !valid; i++) {
 	      var assertedType = assertType(value, type[i]);
-	      expectedTypes.push(assertedType.expectedType);
+	      expectedTypes.push(assertedType.expectedType || '');
 	      valid = assertedType.valid;
 	    }
 	  }
@@ -27821,9 +27833,8 @@
 	  if (this.active) {
 	    // remove self from vm's watcher list
 	    // this is a somewhat expensive operation so we skip it
-	    // if the vm is being destroyed or is performing a v-for
-	    // re-render (the watcher list is then filtered by v-for).
-	    if (!this.vm._isBeingDestroyed && !this.vm._vForRemoving) {
+	    // if the vm is being destroyed.
+	    if (!this.vm._isBeingDestroyed) {
 	      remove$1(this.vm._watchers, this);
 	    }
 	    var i = this.deps.length;
@@ -27961,6 +27972,14 @@
 	
 	function initComputed (vm, computed) {
 	  for (var key in computed) {
+	    /* istanbul ignore if */
+	    if ("development" !== 'production' && key in vm) {
+	      warn(
+	        "existing instance property \"" + key + "\" will be " +
+	        "overwritten by a computed property with the same name.",
+	        vm
+	      );
+	    }
 	    var userDef = computed[key];
 	    if (typeof userDef === 'function') {
 	      computedSharedDefinition.get = makeComputedGetter(userDef, vm);
@@ -29677,7 +29696,7 @@
 	  get: isServerRendering
 	});
 	
-	Vue$3.version = '2.1.7';
+	Vue$3.version = '2.1.8';
 	
 	/*  */
 	
@@ -30504,6 +30523,8 @@
 	          }
 	        }
 	      }
+	    } else if (elm.data !== vnode.text) {
+	      elm.data = vnode.text;
 	    }
 	    return true
 	  }
@@ -30515,7 +30536,7 @@
 	        vnode.tag.toLowerCase() === (node.tagName && node.tagName.toLowerCase())
 	      )
 	    } else {
-	      return _toString(vnode.text) === node.data
+	      return node.nodeType === (vnode.isComment ? 8 : 3)
 	    }
 	  }
 	
@@ -31299,8 +31320,10 @@
 	  var css = data.css;
 	  var type = data.type;
 	  var enterClass = data.enterClass;
+	  var enterToClass = data.enterToClass;
 	  var enterActiveClass = data.enterActiveClass;
 	  var appearClass = data.appearClass;
+	  var appearToClass = data.appearToClass;
 	  var appearActiveClass = data.appearActiveClass;
 	  var beforeEnter = data.beforeEnter;
 	  var enter = data.enter;
@@ -31330,6 +31353,7 @@
 	
 	  var startClass = isAppear ? appearClass : enterClass;
 	  var activeClass = isAppear ? appearActiveClass : enterActiveClass;
+	  var toClass = isAppear ? appearToClass : enterToClass;
 	  var beforeEnterHook = isAppear ? (beforeAppear || beforeEnter) : beforeEnter;
 	  var enterHook = isAppear ? (typeof appear === 'function' ? appear : enter) : enter;
 	  var afterEnterHook = isAppear ? (afterAppear || afterEnter) : afterEnter;
@@ -31344,6 +31368,7 @@
 	
 	  var cb = el._enterCb = once(function () {
 	    if (expectsCSS) {
+	      removeTransitionClass(el, toClass);
 	      removeTransitionClass(el, activeClass);
 	    }
 	    if (cb.cancelled) {
@@ -31376,9 +31401,10 @@
 	  beforeEnterHook && beforeEnterHook(el);
 	  if (expectsCSS) {
 	    addTransitionClass(el, startClass);
+	    addTransitionClass(el, activeClass);
 	    nextFrame(function () {
+	      addTransitionClass(el, toClass);
 	      removeTransitionClass(el, startClass);
-	      addTransitionClass(el, activeClass);
 	      if (!cb.cancelled && !userWantsControl) {
 	        whenTransitionEnds(el, type, cb);
 	      }
@@ -31417,6 +31443,7 @@
 	  var css = data.css;
 	  var type = data.type;
 	  var leaveClass = data.leaveClass;
+	  var leaveToClass = data.leaveToClass;
 	  var leaveActiveClass = data.leaveActiveClass;
 	  var beforeLeave = data.beforeLeave;
 	  var leave = data.leave;
@@ -31436,6 +31463,7 @@
 	      el.parentNode._pending[vnode.key] = null;
 	    }
 	    if (expectsCSS) {
+	      removeTransitionClass(el, leaveToClass);
 	      removeTransitionClass(el, leaveActiveClass);
 	    }
 	    if (cb.cancelled) {
@@ -31468,9 +31496,10 @@
 	    beforeLeave && beforeLeave(el);
 	    if (expectsCSS) {
 	      addTransitionClass(el, leaveClass);
+	      addTransitionClass(el, leaveActiveClass);
 	      nextFrame(function () {
+	        addTransitionClass(el, leaveToClass);
 	        removeTransitionClass(el, leaveClass);
-	        addTransitionClass(el, leaveActiveClass);
 	        if (!cb.cancelled && !userWantsControl) {
 	          whenTransitionEnds(el, type, cb);
 	        }
@@ -31505,6 +31534,9 @@
 	    enterClass: (name + "-enter"),
 	    leaveClass: (name + "-leave"),
 	    appearClass: (name + "-enter"),
+	    enterToClass: (name + "-enter-to"),
+	    leaveToClass: (name + "-leave-to"),
+	    appearToClass: (name + "-enter-to"),
 	    enterActiveClass: (name + "-enter-active"),
 	    leaveActiveClass: (name + "-leave-active"),
 	    appearActiveClass: (name + "-enter-active")
@@ -31772,10 +31804,13 @@
 	  type: String,
 	  enterClass: String,
 	  leaveClass: String,
+	  enterToClass: String,
+	  leaveToClass: String,
 	  enterActiveClass: String,
 	  leaveActiveClass: String,
 	  appearClass: String,
-	  appearActiveClass: String
+	  appearActiveClass: String,
+	  appearToClass: String
 	};
 	
 	// in case the child is also an abstract component, e.g. <keep-alive>
@@ -31817,6 +31852,10 @@
 	      return true
 	    }
 	  }
+	}
+	
+	function isSameChild (child, oldChild) {
+	  return oldChild.key === child.key && oldChild.tag === child.tag
 	}
 	
 	var Transition = {
@@ -31891,11 +31930,10 @@
 	      child.data.show = true;
 	    }
 	
-	    if (oldChild && oldChild.data && oldChild.key !== key) {
+	    if (oldChild && oldChild.data && !isSameChild(child, oldChild)) {
 	      // replace old child transition data with fresh one
 	      // important for dynamic transitions!
-	      var oldData = oldChild.data.transition = extend({}, data);
-	
+	      var oldData = oldChild && (oldChild.data.transition = extend({}, data));
 	      // handle transition mode
 	      if (mode === 'out-in') {
 	        // return placeholder node and queue update when leave finishes
@@ -32106,6 +32144,15 @@
 	  return this._mount(el, hydrating)
 	};
 	
+	if ("development" !== 'production' &&
+	    inBrowser && typeof console !== 'undefined') {
+	  console[console.info ? 'info' : 'log'](
+	    "You are running Vue in development mode.\n" +
+	    "Make sure to turn on production mode when deploying for production.\n" +
+	    "See more tips at https://vuejs.org/guide/deployment.html"
+	  );
+	}
+	
 	// devtools global hook
 	/* istanbul ignore next */
 	setTimeout(function () {
@@ -32116,8 +32163,8 @@
 	      "development" !== 'production' &&
 	      inBrowser && !isEdge && /Chrome\/\d+/.test(window.navigator.userAgent)
 	    ) {
-	      console.log(
-	        'Download the Vue Devtools for a better development experience:\n' +
+	      console[console.info ? 'info' : 'log'](
+	        'Download the Vue Devtools extension for a better development experience:\n' +
 	        'https://github.com/vuejs/vue-devtools'
 	      );
 	    }
@@ -33568,6 +33615,8 @@
 	  };
 	}
 	
+	/*  */
+	
 	var baseDirectives = {
 	  bind: bind$2,
 	  cloak: noop
@@ -33846,23 +33895,25 @@
 	  }
 	}
 	
-	// determine the normalzation needed for the children array.
+	// determine the normalization needed for the children array.
 	// 0: no normalization needed
 	// 1: simple normalization needed (possible 1-level deep nested array)
-	// 2: full nomralization needed
+	// 2: full normalization needed
 	function getNormalizationType (children) {
+	  var res = 0;
 	  for (var i = 0; i < children.length; i++) {
 	    var el = children[i];
 	    if (needsNormalization(el) ||
 	        (el.if && el.ifConditions.some(function (c) { return needsNormalization(c.block); }))) {
-	      return 2
+	      res = 2;
+	      break
 	    }
 	    if (maybeComponent(el) ||
 	        (el.if && el.ifConditions.some(function (c) { return maybeComponent(c.block); }))) {
-	      return 1
+	      res = 1;
 	    }
 	  }
-	  return 0
+	  return res
 	}
 	
 	function needsNormalization (el) {
@@ -34167,8 +34218,11 @@
 	  var falseValueBinding = getBindingAttr(el, 'false-value') || 'false';
 	  addProp(el, 'checked',
 	    "Array.isArray(" + value + ")" +
-	      "?_i(" + value + "," + valueBinding + ")>-1" +
-	      ":_q(" + value + "," + trueValueBinding + ")"
+	      "?_i(" + value + "," + valueBinding + ")>-1" + (
+	        trueValueBinding === 'true'
+	          ? (":(" + value + ")")
+	          : (":_q(" + value + "," + trueValueBinding + ")")
+	      )
 	  );
 	  addHandler(el, 'change',
 	    "var $$a=" + value + "," +
@@ -36694,6 +36748,9 @@
 	//
 	//
 	//
+	//
+	//
+	//
 	
 	var _moment = __webpack_require__(315);
 	
@@ -36741,6 +36798,7 @@
 	    return {
 	      user: null,
 	      credential: null,
+	      query: null,
 	
 	      bookings: [],
 	      currentBooking: null,
@@ -36774,6 +36832,26 @@
 	      gapiPromise.then(function () {
 	        return gapi.auth.setToken({ access_token: at });
 	      });
+	    },
+	    query: function query(newValue, oldValue) {
+	      var _this = this;
+	
+	      if (oldValue) oldValue.off();
+	
+	      // FIXME: set the date range
+	      newValue.on('value', function (bookings) {
+	        _this.bookings = (0, _lodash2.default)(bookings.val()).toPairs().map(function (_ref) {
+	          var _ref2 = _slicedToArray(_ref, 2),
+	              key = _ref2[0],
+	              booking = _ref2[1];
+	
+	          booking.id = key;
+	          booking.read = booking.read || false;
+	          booking.cancelled = booking.cancelled || false;
+	          booking.scribbles = booking.scribbles || null;
+	          return booking;
+	        }).value();
+	      });
 	    }
 	  },
 	  methods: {
@@ -36782,8 +36860,6 @@
 	      this.now = Date.now();
 	    },
 	    reload: function reload() {
-	      var _this = this;
-	
 	      var query = firebase.database().ref('bookings').orderByChild(this.filterBy);
 	
 	      if (this.dateRangeType === 'future') {
@@ -36802,20 +36878,8 @@
 	        query = query.startAt(min).endAt(max);
 	      }
 	
-	      // FIXME: set the date range
-	      query.once('value').then(function (bookings) {
-	        _this.bookings = (0, _lodash2.default)(bookings.val()).toPairs().map(function (_ref) {
-	          var _ref2 = _slicedToArray(_ref, 2),
-	              key = _ref2[0],
-	              booking = _ref2[1];
-	
-	          booking.id = key;
-	          booking.read = booking.read || false;
-	          booking.cancelled = booking.cancelled || false;
-	          booking.scribbles = booking.scribbles || null;
-	          return booking;
-	        }).value();
-	      });
+	      // Handover the new query to the watcher
+	      this.query = query;
 	    },
 	    login: function login() {
 	      var provider = new firebase.auth.GoogleAuthProvider();
@@ -36825,14 +36889,15 @@
 	    logout: function logout() {
 	      firebase.auth().signOut();
 	    },
-	    read: function read(booking) {
-	      booking.read = !booking.read;
+	    read: function read(booking, result) {
+	      booking.read = result;
 	
 	      /* update firebase */
 	      firebase.database().ref('bookings/' + booking.id + '/read').set(booking.read);
 	    },
-	    cancel: function cancel($event, booking) {
-	      booking.cancelled = $event.target.checked;
+	    cancel: function cancel(booking, result) {
+	      console.log(result);
+	      booking.cancelled = result;
 	
 	      /* update firebase */
 	      firebase.database().ref('bookings/' + booking.id + '/cancelled').set(booking.cancelled);
@@ -54013,6 +54078,7 @@
 	    }
 	  }, [_vm._v("Pickup Time")]), _vm._v(" "), _c('th', [_vm._v("Patient Details")]), _vm._v(" "), _c('th', [_vm._v("Pickup Location")]), _vm._v(" "), _c('th', [_vm._v("Drop-off Location")]), _vm._v(" "), _c('th', [_vm._v("One/Two-Way")]), _vm._v(" "), _c('th', [_vm._v("Wheelchair Stretcher")]), _vm._v(" "), _c('th', [_vm._v("Oxygen Rate")]), _vm._v(" "), _c('th', [_vm._v("Patient Weight")]), _vm._v(" "), _c('th', [_vm._v("Contact Person & Details ")]), _vm._v(" "), _c('th', [_vm._v("Precautions")]), _vm._v(" "), _c('th', [_vm._v("Accompanying Passengers")]), _vm._v(" "), _c('th', [_vm._v("Appointment Time")]), _vm._v(" "), _c('th', [_vm._v("Cancel")]), _vm._v(" "), _c('th')])]), _vm._v(" "), _c('tbody', [_vm._l((_vm.sortedBookings), function(booking, index) {
 	    return [_c('tr', {
+	      key: booking.id + '-first',
 	      class: {
 	        cancelled: booking.cancelled, read: booking.read, 'is-odd': (index % 2)
 	      }
@@ -54020,7 +54086,7 @@
 	      staticClass: "read-cell",
 	      on: {
 	        "click": function($event) {
-	          _vm.read(booking)
+	          _vm.read(booking, !booking.read)
 	        }
 	      }
 	    }, [_vm._v("\n            " + _vm._s(booking.read ? '\u00a0' : '\u2709') + "\n          ")]), _vm._v(" "), _c('td', {
@@ -54028,18 +54094,39 @@
 	        "title": _vm.formatTime(booking.createdAt)
 	      }
 	    }, [_vm._v("\n            " + _vm._s(_vm.formatTimePast(booking.createdAt, _vm.now)) + " ago\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n              " + _vm._s(_vm.filters.formatTime(booking.pickupTime)) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.patientName) + ","), _c('br'), _vm._v("\n            " + _vm._s(booking.patientGender) + "\n            (" + _vm._s(booking.patientNric) + ")\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.pickupLocation) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.dropoffLocation) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.twoWay) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.wheelchairStretcher) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.oxygenRate) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.patientWeight) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.contactPerson) + "\n            " + _vm._s(booking.contactPhone) + "\n            " + _vm._s(booking.contactEmail) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.precautions) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.accompanyingPassengers) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.appointmentTime) + "\n          ")]), _vm._v(" "), _c('td', [_c('label', [_c('input', {
+	      directives: [{
+	        name: "model",
+	        rawName: "v-model",
+	        value: (booking.cancelled),
+	        expression: "booking.cancelled"
+	      }],
 	      attrs: {
 	        "type": "checkbox"
 	      },
 	      domProps: {
-	        "checked": booking.cancelled
+	        "checked": Array.isArray(booking.cancelled) ? _vm._i(booking.cancelled, null) > -1 : (booking.cancelled)
 	      },
 	      on: {
-	        "change": function($event) {
-	          _vm.cancel($event, booking)
-	        }
+	        "change": [function($event) {
+	          var $$a = booking.cancelled,
+	            $$el = $event.target,
+	            $$c = $$el.checked ? (true) : (false);
+	          if (Array.isArray($$a)) {
+	            var $$v = null,
+	              $$i = _vm._i($$a, $$v);
+	            if ($$c) {
+	              $$i < 0 && (booking.cancelled = $$a.concat($$v))
+	            } else {
+	              $$i > -1 && (booking.cancelled = $$a.slice(0, $$i).concat($$a.slice($$i + 1)))
+	            }
+	          } else {
+	            booking.cancelled = $$c
+	          }
+	        }, function($event) {
+	          _vm.cancel(booking, $event.target.checked)
+	        }]
 	      }
-	    }), _vm._v("Cancelled\n            ")]), _vm._v(" "), (booking.googleCalendarId) ? _c('a', {
+	    }), _vm._v("Cancelled\n              " + _vm._s(booking.cancelled) + "\n            ")]), _vm._v(" "), (booking.googleCalendarId) ? _c('a', {
 	      on: {
 	        "click": function($event) {
 	          _vm.goToCalendar(booking)
@@ -54061,10 +54148,11 @@
 	    }, [_c('i', {
 	      staticClass: "glyphicon glyphicon-pencil"
 	    })])])]), _vm._v(" "), (booking.scribbles) ? _c('tr', {
+	      key: booking.id + '-second',
 	      class: {
 	        'is-odd': (index % 2)
 	      }
-	    }, [_c('td'), _vm._v(" "), _c('td'), _vm._v(" "), _c('td', {
+	    }, [_vm._v(">\n          "), _c('td'), _vm._v(" "), _c('td'), _vm._v(" "), _c('td', {
 	      attrs: {
 	        "colspan": "2"
 	      }
