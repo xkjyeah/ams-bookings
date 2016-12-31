@@ -66,8 +66,9 @@
       </thead>
       <tbody>
         <template v-for="(booking, index) in sortedBookings">
-          <tr :class="{cancelled: booking.cancelled, read: booking.read, 'is-odd': (index % 2)}">
-            <td @click="read(booking)" class="read-cell">
+          <tr :class="{cancelled: booking.cancelled, read: booking.read, 'is-odd': (index % 2)}"
+              :key="booking.id + '-first'">
+            <td @click="read(booking, !booking.read)" class="read-cell">
               {{booking.read ? '\u00a0' : '\u2709'}}
             </td>
             <td :title="formatTime(booking.createdAt)">
@@ -121,8 +122,9 @@
             <td>
               <label>
                 <input type="checkbox"
-                  @change="cancel($event,booking)"
-                  :checked="booking.cancelled">Cancelled
+                  @change="cancel(booking, $event.target.checked)"
+                  v-model="booking.cancelled">Cancelled
+                {{booking.cancelled}}
               </label>
               <a v-if="booking.googleCalendarId"
                   @click="goToCalendar(booking)">
@@ -138,7 +140,8 @@
           </tr>
 
           <tr :class="{'is-odd': (index % 2)}"
-              v-if="booking.scribbles">
+              v-if="booking.scribbles"
+              :key="booking.id + '-second'">>
             <td>
             </td>
             <td>
@@ -280,6 +283,7 @@ export default {
     return {
       user: null,
       credential: null,
+      query: null,
 
       bookings: [],
       currentBooking: null,
@@ -312,6 +316,23 @@ export default {
     },
     'credential.accessToken'(at) {
       gapiPromise.then(() => gapi.auth.setToken({access_token: at}))
+    },
+    query(newValue, oldValue) {
+      if (oldValue) oldValue.off();
+
+      // FIXME: set the date range
+      newValue.on('value', (bookings) => {
+        this.bookings = _(bookings.val())
+          .toPairs()
+          .map(([key, booking]) => {
+            booking.id=key;
+            booking.read = booking.read || false;
+            booking.cancelled = booking.cancelled || false;
+            booking.scribbles = booking.scribbles || null;
+            return booking
+          })
+          .value();
+      })
     }
   },
   methods: {
@@ -337,20 +358,8 @@ export default {
         query = query.startAt(min).endAt(max)
       }
 
-      // FIXME: set the date range
-      query.once('value')
-      .then(bookings => {
-        this.bookings = _(bookings.val())
-          .toPairs()
-          .map(([key, booking]) => {
-            booking.id=key;
-            booking.read = booking.read || false;
-            booking.cancelled = booking.cancelled || false;
-            booking.scribbles = booking.scribbles || null;
-            return booking
-          })
-          .value();
-      })
+      // Handover the new query to the watcher
+      this.query = query;
     },
     login(){
       var provider = new firebase.auth.GoogleAuthProvider();
@@ -360,16 +369,17 @@ export default {
     logout() {
       firebase.auth().signOut();
     },
-    read(booking) {
-      booking.read = !booking.read;
+    read(booking, result) {
+      booking.read = result;
 
       /* update firebase */
       firebase.database()
       .ref(`bookings/${booking.id}/read`)
       .set(booking.read)
     },
-    cancel($event, booking) {
-      booking.cancelled = $event.target.checked;
+    cancel(booking, result) {
+      console.log(result);
+      booking.cancelled = result;
 
       /* update firebase */
       firebase.database()

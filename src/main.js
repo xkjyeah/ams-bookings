@@ -5,6 +5,7 @@ import VueResource from 'vue-resource';
 import App from './components/app.vue';
 import * as filters from './utils/filters'
 import moment from 'moment';
+import assert from 'assert';
 
  firebase.initializeApp({
     apiKey: "AIzaSyDsiq9OIO0yTi2cgLbAjiTtWdKmo7HNBPE",
@@ -15,7 +16,13 @@ import moment from 'moment';
 });
 
 window.gapiPromise = new Promise((resolve) => {
-  gapi.client.load('calendar', 'v3', () => resolve(gapi));
+  window.checkAuth = function() {
+    assert(gapi)
+    gapi.client.load('calendar', 'v3', () => resolve(gapi));
+  }
+  if (typeof gapi !== 'undefined') {
+    gapi.client.load('calendar', 'v3', () => resolve(gapi));
+  }
 })
 
 document.addEventListener('DOMContentLoaded', () => {
