@@ -65,9 +65,13 @@
       </thead>
       <tbody>
         <template v-for="(booking, index) in sortedBookings">
-          <tr :class="{cancelled: booking.cancelled, 'is-odd': (index % 2)}">
+          <tr :class="{cancelled: booking.cancelled, read: booking.read, 'is-odd': (index % 2)}">
             <td :title="formatTime(booking.createdAt)">
               {{formatTimePast(booking.createdAt, now)}} ago
+
+              <button @click="read(booking)" class="btn btn-default">
+                {{booking.read ? ' ' : '\u2709'}}
+              </button>
             </td>
             <td>
                 {{filters.formatTime(booking.pickupTime)}}
@@ -338,6 +342,7 @@ export default {
           .toPairs()
           .map(([key, booking]) => {
             booking.id=key;
+            booking.read = booking.read || false;
             booking.cancelled = booking.cancelled || false;
             booking.scribbles = booking.scribbles || null;
             return booking
@@ -353,6 +358,14 @@ export default {
     logout() {
       firebase.auth().signOut();
     },
+    read(booking) {
+      booking.read = !booking.read;
+
+      /* update firebase */
+      firebase.database()
+      .ref(`bookings/${booking.id}/read`)
+      .set(booking.read)
+    },
     cancel($event, booking) {
       booking.cancelled = $event.target.checked;
 
@@ -360,6 +373,7 @@ export default {
       firebase.database()
       .ref(`bookings/${booking.id}/cancelled`)
       .set(booking.cancelled)
+
       /* update google calendar */
       if (booking.googleCalendarId) {
         gapi.client.calendar.events.patch({
@@ -477,6 +491,10 @@ export default {
 .table.table-striped-custom tbody {
   tr.is-odd {
     background-color: rgb(224, 247, 250);
+  }
+  tr:not(.read) td {
+    font-weight: bold;
+    font-style: italic;
   }
   tr {
     td {
