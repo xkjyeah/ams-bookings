@@ -132,7 +132,7 @@
             <td>
               <button @click="startScribbling(booking)"
                   class="btn btn-default">
-                Scribble
+                <i class="glyphicon glyphicon-pencil"></i>
               </button>
             </td>
           </tr>
