@@ -36107,7 +36107,7 @@
 	
 	
 	// module
-	exports.push([module.id, "\n.table.table-striped-custom thead tr {\n  background-color: #4dd0e1;\n}\n.table.table-striped-custom thead tr td {\n    color: black;\n}\n.table.table-striped-custom thead tr th.sortable:hover {\n    background-color: #DDD;\n}\n.table.table-striped-custom tbody tr.is-odd {\n  background-color: #e0f7fa;\n}\n.table.table-striped-custom tbody tr:not(.read) td {\n  font-weight: bold;\n  font-style: italic;\n}\n.table.table-striped-custom tbody tr td {\n  color: black;\n}\n.table.table-striped-custom tbody tr.cancelled td {\n  text-decoration: line-through;\n  color: #888;\n}\n.r {\n  flex-direction: row;\n  display: inline-flex;\n}\n.r .c {\n    flex: 0 0 auto;\n}\n.date-range-type {\n  width: 10em;\n}\n", ""]);
+	exports.push([module.id, "\n.table.table-striped-custom thead tr {\n  background-color: #4dd0e1;\n}\n.table.table-striped-custom thead tr td {\n    color: black;\n}\n.table.table-striped-custom thead tr th.sortable:hover {\n    background-color: #DDD;\n}\n.table.table-striped-custom tbody tr.is-odd {\n  background-color: #e0f7fa;\n}\n.table.table-striped-custom tbody tr:not(.read) td {\n  font-weight: bold;\n  font-style: italic;\n}\n.table.table-striped-custom tbody tr td {\n  color: black;\n}\n.table.table-striped-custom tbody tr.cancelled td {\n  text-decoration: line-through;\n  color: #888;\n}\n.table.table-striped-custom tbody td.read-cell:hover {\n  background-color: #DDD;\n  cursor: pointer;\n}\n.r {\n  flex-direction: row;\n  display: inline-flex;\n}\n.r .c {\n    flex: 0 0 auto;\n}\n.date-range-type {\n  width: 10em;\n}\n", ""]);
 	
 	// exports
 
@@ -36433,6 +36433,8 @@
 	var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 	
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; //
+	//
+	//
 	//
 	//
 	//
@@ -53989,7 +53991,7 @@
 	    }
 	  })], 1)]), _vm._v(" "), _c('table', {
 	    staticClass: "table table-striped-custom"
-	  }, [_c('thead', [_c('tr', [_c('th', {
+	  }, [_c('thead', [_c('tr', [_c('th'), _vm._v(" "), _c('th', {
 	    staticClass: "sortable",
 	    class: {
 	      active: _vm.orderBy == 'createdAt'
@@ -54015,17 +54017,17 @@
 	        cancelled: booking.cancelled, read: booking.read, 'is-odd': (index % 2)
 	      }
 	    }, [_c('td', {
-	      attrs: {
-	        "title": _vm.formatTime(booking.createdAt)
-	      }
-	    }, [_vm._v("\n            " + _vm._s(_vm.formatTimePast(booking.createdAt, _vm.now)) + " ago\n\n            "), _c('button', {
-	      staticClass: "btn btn-default",
+	      staticClass: "read-cell",
 	      on: {
 	        "click": function($event) {
 	          _vm.read(booking)
 	        }
 	      }
-	    }, [_vm._v("\n              " + _vm._s(booking.read ? ' ' : '\u2709') + "\n            ")])]), _vm._v(" "), _c('td', [_vm._v("\n              " + _vm._s(_vm.filters.formatTime(booking.pickupTime)) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.patientName) + ","), _c('br'), _vm._v("\n            " + _vm._s(booking.patientGender) + "\n            (" + _vm._s(booking.patientNric) + ")\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.pickupLocation) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.dropoffLocation) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.twoWay) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.wheelchairStretcher) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.oxygenRate) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.patientWeight) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.contactPerson) + "\n            " + _vm._s(booking.contactPhone) + "\n            " + _vm._s(booking.contactEmail) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.precautions) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.accompanyingPassengers) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.appointmentTime) + "\n          ")]), _vm._v(" "), _c('td', [_c('label', [_c('input', {
+	    }, [_vm._v("\n            " + _vm._s(booking.read ? '\u00a0' : '\u2709') + "\n          ")]), _vm._v(" "), _c('td', {
+	      attrs: {
+	        "title": _vm.formatTime(booking.createdAt)
+	      }
+	    }, [_vm._v("\n            " + _vm._s(_vm.formatTimePast(booking.createdAt, _vm.now)) + " ago\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n              " + _vm._s(_vm.filters.formatTime(booking.pickupTime)) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.patientName) + ","), _c('br'), _vm._v("\n            " + _vm._s(booking.patientGender) + "\n            (" + _vm._s(booking.patientNric) + ")\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.pickupLocation) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.dropoffLocation) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.twoWay) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.wheelchairStretcher) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.oxygenRate) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.patientWeight) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.contactPerson) + "\n            " + _vm._s(booking.contactPhone) + "\n            " + _vm._s(booking.contactEmail) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.precautions) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.accompanyingPassengers) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.appointmentTime) + "\n          ")]), _vm._v(" "), _c('td', [_c('label', [_c('input', {
 	      attrs: {
 	        "type": "checkbox"
 	      },
@@ -54060,7 +54062,7 @@
 	      class: {
 	        'is-odd': (index % 2)
 	      }
-	    }, [_c('td'), _vm._v(" "), _c('td', {
+	    }, [_c('td'), _vm._v(" "), _c('td'), _vm._v(" "), _c('td', {
 	      attrs: {
 	        "colspan": "2"
 	      }
