@@ -36750,7 +36750,6 @@
 	//
 	//
 	//
-	//
 	
 	var _moment = __webpack_require__(315);
 	
@@ -36896,7 +36895,6 @@
 	      firebase.database().ref('bookings/' + booking.id + '/read').set(booking.read);
 	    },
 	    cancel: function cancel(booking, result) {
-	      console.log(result);
 	      booking.cancelled = result;
 	
 	      /* update firebase */
@@ -54126,7 +54124,7 @@
 	          _vm.cancel(booking, $event.target.checked)
 	        }]
 	      }
-	    }), _vm._v("Cancelled\n              " + _vm._s(booking.cancelled) + "\n            ")]), _vm._v(" "), (booking.googleCalendarId) ? _c('a', {
+	    }), _vm._v("Cancelled\n            ")]), _vm._v(" "), (booking.googleCalendarId) ? _c('a', {
 	      on: {
 	        "click": function($event) {
 	          _vm.goToCalendar(booking)
