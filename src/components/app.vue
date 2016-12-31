@@ -124,7 +124,6 @@
                 <input type="checkbox"
                   @change="cancel(booking, $event.target.checked)"
                   v-model="booking.cancelled">Cancelled
-                {{booking.cancelled}}
               </label>
               <a v-if="booking.googleCalendarId"
                   @click="goToCalendar(booking)">
@@ -378,7 +377,6 @@ export default {
       .set(booking.read)
     },
     cancel(booking, result) {
-      console.log(result);
       booking.cancelled = result;
 
       /* update firebase */
