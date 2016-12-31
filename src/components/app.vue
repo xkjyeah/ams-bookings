@@ -413,13 +413,25 @@ export default {
   td {
     color: black;
   }
+  th.sortable:hover {
+    background-color: #DDD;
+  }
 }
 .table.table-striped-custom tbody {
   tr.is-odd {
     background-color: rgb(224, 247, 250);
   }
-  td {
-    color: black;
+  tr {
+    td {
+      color: black;
+    }
+
+    &.cancelled {
+      td {
+        text-decoration: line-through;
+        color: #888;
+      }
+    }
   }
 }
 
