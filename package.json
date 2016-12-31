@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "http-server -c-1 .",
-    "deploy": "webpack && shx mkdir -p out && shx cp index.html out && shx cp -r dist out && gh-pages -d out"
+    "deploy": "webpack && shx mkdir -p out && shx cp index.html out && shx cp -r dist static out && gh-pages -d out"
   },
   "author": "",
   "license": "ISC",
