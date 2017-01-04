@@ -8240,16 +8240,33 @@
 	
 	window.gapiPromise = new Promise(function (resolve) {
 	  window.checkAuth = function () {
-	    (0, _assert2.default)(gapi);
-	    gapi.client.load('calendar', 'v3', function () {
-	      return resolve(gapi);
+	    var clientId = '245600362111-fc5u997g7sfch54jclqtmo6i8f2bm0ok.apps.googleusercontent.com';
+	    var apiKey = 'AIzaSyDsiq9OIO0yTi2cgLbAjiTtWdKmo7HNBPE';
+	    var scope = 'https://www.googleapis.com/auth/calendar email';
+	
+	    var gCredentials = window.localStorage['g-credential'];
+	
+	    gapi.client.init({
+	      apiKey: apiKey,
+	      clientId: clientId, scope: scope
+	    })
+	    // .then(() => new Promise(resolve =>
+	    //   gapi.load('auth2', resolve)
+	    // ))
+	    .then(function () {
+	      // gapi.auth2.init({
+	      //   client_id: clientId, scope,
+	      //   cookie_policy: 'single_host_origin'
+	      // })
+	      // .then(() => {
+	
+	      // })
+	
+	      gapi.client.load('calendar', 'v3', function () {
+	        resolve(gapi.auth2.getAuthInstance().isSignedIn.get());
+	      });
 	    });
 	  };
-	  if (typeof gapi !== 'undefined') {
-	    gapi.client.load('calendar', 'v3', function () {
-	      return resolve(gapi);
-	    });
-	  }
 	});
 	
 	document.addEventListener('DOMContentLoaded', function () {
@@ -36827,11 +36844,6 @@
 	    filterBy: function filterBy() {
 	      this.reload();
 	    },
-	    'credential.accessToken': function credentialAccessToken(at) {
-	      gapiPromise.then(function () {
-	        return gapi.auth.setToken({ access_token: at });
-	      });
-	    },
 	    query: function query(newValue, oldValue) {
 	      var _this = this;
 	
@@ -36850,6 +36862,16 @@
 	          booking.scribbles = booking.scribbles || null;
 	          return booking;
 	        }).value();
+	      });
+	    },
+	    'credential.accessToken': function credentialAccessToken(accessToken) {
+	      var _this2 = this;
+	
+	      var provider = firebase.auth.GoogleAuthProvider;
+	      var credential = provider.credential(null, accessToken);
+	      firebase.auth().signInWithCredential(credential).then(function (user) {
+	        _this2.user = user;
+	        _this2.reload();
 	      });
 	    }
 	  },
@@ -36881,12 +36903,24 @@
 	      this.query = query;
 	    },
 	    login: function login() {
-	      var provider = new firebase.auth.GoogleAuthProvider();
-	      provider.addScope('https://www.googleapis.com/auth/calendar');
-	      firebase.auth().signInWithRedirect(provider);
+	      var _this3 = this;
+	
+	      var authInstance = gapi.auth2.getAuthInstance();
+	
+	      authInstance.signIn().then(function (yes) {
+	        window.localStorage['g-credential'] = gapi.auth.getToken();
+	
+	        var authInstance = gapi.auth2.getAuthInstance();
+	        var user = authInstance.currentUser.get();
+	
+	        _this3.credential = {
+	          accessToken: user.getAuthResponse().access_token
+	        };
+	      });
 	    },
 	    logout: function logout() {
 	      firebase.auth().signOut();
+	      gapi.auth2.getAuthInstance().signOut();
 	    },
 	    read: function read(booking, result) {
 	      booking.read = result;
@@ -36979,26 +37013,24 @@
 	    }
 	  },
 	  created: function created() {
-	    var _this2 = this;
+	    var _this4 = this;
 	
 	    this.updateMonth();
-	    firebase.auth().onAuthStateChanged(function (user) {
-	      _this2.user = user;
-	      _this2.reload();
+	
+	    gapiPromise.then(function () {
+	      var resp = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse();
+	
+	      _this4.credential = {
+	        accessToken: resp.access_token
+	      };
 	    });
 	
-	    if (window.localStorage['g-credential']) {
-	      try {
-	        this.credential = JSON.parse(window.localStorage['g-credential']);
-	      } catch (err) {}
-	    }
-	
-	    firebase.auth().getRedirectResult().then(function (result) {
-	      if (result.credential) {
-	        _this2.credential = result.credential;
-	        window.localStorage['g-credential'] = JSON.stringify(_this2.credential);
-	      }
-	    });
+	    // firebase.auth().getRedirectResult().then((result) => {
+	    //   if (result.credential) {
+	    //     this.credential = result.credential;
+	    //     window.localStorage['g-credential'] = JSON.stringify(this.credential);
+	    //   }
+	    // })
 	  }
 	};
 
