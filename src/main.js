@@ -17,11 +17,32 @@ import assert from 'assert';
 
 window.gapiPromise = new Promise((resolve) => {
   window.checkAuth = function() {
-    assert(gapi)
-    gapi.client.load('calendar', 'v3', () => resolve(gapi));
-  }
-  if (typeof gapi !== 'undefined') {
-    gapi.client.load('calendar', 'v3', () => resolve(gapi));
+    var clientId = '245600362111-fc5u997g7sfch54jclqtmo6i8f2bm0ok.apps.googleusercontent.com';
+    var apiKey = 'AIzaSyDsiq9OIO0yTi2cgLbAjiTtWdKmo7HNBPE';
+    var scope = 'https://www.googleapis.com/auth/calendar email';
+
+    var gCredentials = window.localStorage['g-credential'];
+
+    gapi.client.init({
+      apiKey,
+      clientId, scope
+    })
+    // .then(() => new Promise(resolve =>
+    //   gapi.load('auth2', resolve)
+    // ))
+    .then(() =>{
+      // gapi.auth2.init({
+      //   client_id: clientId, scope,
+      //   cookie_policy: 'single_host_origin'
+      // })
+      // .then(() => {
+
+      // })
+
+      gapi.client.load('calendar', 'v3', () => {
+        resolve(gapi.auth2.getAuthInstance().isSignedIn.get())
+      });
+    })
   }
 })
 

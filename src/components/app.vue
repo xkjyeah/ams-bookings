@@ -313,9 +313,6 @@ export default {
     filterBy() {
       this.reload();
     },
-    'credential.accessToken'(at) {
-      gapiPromise.then(() => gapi.auth.setToken({access_token: at}))
-    },
     query(newValue, oldValue) {
       if (oldValue) oldValue.off();
 
@@ -332,6 +329,15 @@ export default {
           })
           .value();
       })
+    },
+    'credential.accessToken'(accessToken) {
+      var provider = firebase.auth.GoogleAuthProvider;
+      var credential = provider.credential(null, accessToken);
+      firebase.auth().signInWithCredential(credential)
+      .then((user) => {
+        this.user = user;
+        this.reload();
+      });
     }
   },
   methods: {
@@ -361,12 +367,24 @@ export default {
       this.query = query;
     },
     login(){
-      var provider = new firebase.auth.GoogleAuthProvider();
-      provider.addScope('https://www.googleapis.com/auth/calendar');
-      firebase.auth().signInWithRedirect(provider)
+      var authInstance = gapi.auth2.getAuthInstance()
+
+      authInstance.signIn()
+      .then((yes) => {
+        window.localStorage['g-credential'] = gapi.auth.getToken();
+
+        var authInstance = gapi.auth2.getAuthInstance();
+        var user = authInstance.currentUser.get()
+
+        this.credential = {
+          accessToken: user.getAuthResponse().access_token
+        };
+
+      })
     },
     logout() {
       firebase.auth().signOut();
+      gapi.auth2.getAuthInstance().signOut();
     },
     read(booking, result) {
       booking.read = result;
@@ -467,23 +485,21 @@ export default {
   },
   created() {
     this.updateMonth();
-    firebase.auth().onAuthStateChanged((user) => {
-      this.user = user;
-      this.reload();
-    });
 
-    if (window.localStorage['g-credential']) {
-      try {
-        this.credential = JSON.parse(window.localStorage['g-credential'])
-      } catch (err) {}
-    }
+    gapiPromise.then(() => {
+      var resp = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse();
 
-    firebase.auth().getRedirectResult().then((result) => {
-      if (result.credential) {
-        this.credential = result.credential;
-        window.localStorage['g-credential'] = JSON.stringify(this.credential);
+      this.credential = {
+        accessToken: resp.access_token
       }
     })
+
+    // firebase.auth().getRedirectResult().then((result) => {
+    //   if (result.credential) {
+    //     this.credential = result.credential;
+    //     window.localStorage['g-credential'] = JSON.stringify(this.credential);
+    //   }
+    // })
   },
 }
 </script>
