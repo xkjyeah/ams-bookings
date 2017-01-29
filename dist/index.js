@@ -8214,7 +8214,7 @@
 	
 	var _app2 = _interopRequireDefault(_app);
 	
-	var _filters = __webpack_require__(441);
+	var _filters = __webpack_require__(436);
 	
 	var filters = _interopRequireWildcard(_filters);
 	
@@ -8222,7 +8222,7 @@
 	
 	var _moment2 = _interopRequireDefault(_moment);
 	
-	var _assert = __webpack_require__(442);
+	var _assert = __webpack_require__(437);
 	
 	var _assert2 = _interopRequireDefault(_assert);
 	
@@ -36110,7 +36110,7 @@
 	__vue_exports__ = __webpack_require__(314)
 	
 	/* template */
-	var __vue_template__ = __webpack_require__(446)
+	var __vue_template__ = __webpack_require__(495)
 	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
 	if (
 	  typeof __vue_exports__.default === "object" ||
@@ -36178,7 +36178,7 @@
 	
 	
 	// module
-	exports.push([module.id, "\n.table.table-striped-custom thead tr {\n  background-color: #4dd0e1;\n}\n.table.table-striped-custom thead tr td {\n    color: black;\n}\n.table.table-striped-custom thead tr th.sortable:hover {\n    background-color: #DDD;\n}\n.table.table-striped-custom tbody tr.is-odd {\n  background-color: #e0f7fa;\n}\n.table.table-striped-custom tbody tr:not(.read) td {\n  font-weight: bold;\n  font-style: italic;\n}\n.table.table-striped-custom tbody tr td {\n  color: black;\n}\n.table.table-striped-custom tbody tr.cancelled td {\n  text-decoration: line-through;\n  color: #888;\n}\n.table.table-striped-custom tbody td.read-cell:hover {\n  background-color: #DDD;\n  cursor: pointer;\n}\n.r {\n  flex-direction: row;\n  display: inline-flex;\n}\n.r .c {\n    flex: 0 0 auto;\n}\n.date-range-type {\n  width: 10em;\n}\n", ""]);
+	exports.push([module.id, "\n.table.table-striped-custom thead tr {\n  background-color: #4dd0e1;\n}\n.table.table-striped-custom thead tr td {\n    color: black;\n}\n.table.table-striped-custom thead tr th.sortable:hover {\n    background-color: #DDD;\n}\n.table.table-striped-custom tbody tr.is-odd {\n  background-color: #e0f7fa;\n}\n.table.table-striped-custom tbody tr:not(.read) td {\n  font-weight: bold;\n  font-style: italic;\n}\n.table.table-striped-custom tbody tr td {\n  color: black;\n}\n.table.table-striped-custom tbody tr.cancelled td {\n  text-decoration: line-through;\n  color: #888;\n}\n.r {\n  flex-direction: row;\n  display: inline-flex;\n}\n.r .c {\n    flex: 0 0 auto;\n}\n.date-range-type {\n  width: 10em;\n}\n.management-tools {\n  float: right;\n}\n", ""]);
 	
 	// exports
 
@@ -36767,6 +36767,46 @@
 	//
 	//
 	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
 	
 	var _moment = __webpack_require__(315);
 	
@@ -36784,19 +36824,15 @@
 	
 	var _displayWithScribbles2 = _interopRequireDefault(_displayWithScribbles);
 	
-	var _dialogue = __webpack_require__(431);
-	
-	var _dialogue2 = _interopRequireDefault(_dialogue);
-	
-	var _calendar = __webpack_require__(436);
+	var _calendar = __webpack_require__(431);
 	
 	var _calendar2 = _interopRequireDefault(_calendar);
 	
-	var _filters = __webpack_require__(441);
+	var _filters = __webpack_require__(436);
 	
 	var filters = _interopRequireWildcard(_filters);
 	
-	var _assert = __webpack_require__(442);
+	var _assert = __webpack_require__(437);
 	
 	var _assert2 = _interopRequireDefault(_assert);
 	
@@ -36808,7 +36844,9 @@
 	  components: {
 	    DisplayWithScribbles: _displayWithScribbles2.default,
 	    DatePicker: _calendar2.default,
-	    ReplyDialogue: _dialogue2.default
+	    SmsDialog: __webpack_require__(441),
+	    SmsLogDialog: __webpack_require__(485),
+	    DriversDialog: __webpack_require__(490)
 	  },
 	  data: function data() {
 	    return {
@@ -36817,8 +36855,8 @@
 	      query: null,
 	
 	      bookings: [],
-	      currentBooking: null,
-	      replyDialogueOpen: false,
+	      smsBooking: null,
+	      smsLogBooking: null,
 	      filterBy: 'pickupTime',
 	      orderBy: 'pickupTime',
 	      order: 'asc',
@@ -36828,7 +36866,9 @@
 	      filters: _extends({}, filters), /* Convenience methods */
 	
 	      dateRangeType: 'future',
-	      dateRange: null
+	      dateRange: null,
+	
+	      showDriversDialog: false
 	    };
 	  },
 	
@@ -36922,6 +36962,34 @@
 	      firebase.auth().signOut();
 	      gapi.auth2.getAuthInstance().signOut();
 	    },
+	    markAllRead: function markAllRead() {
+	      if (confirm("Are you sure you want to mark all as read?")) {
+	        var _iteratorNormalCompletion = true;
+	        var _didIteratorError = false;
+	        var _iteratorError = undefined;
+	
+	        try {
+	          for (var _iterator = this.bookings[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	            var booking = _step.value;
+	
+	            this.read(booking, true);
+	          }
+	        } catch (err) {
+	          _didIteratorError = true;
+	          _iteratorError = err;
+	        } finally {
+	          try {
+	            if (!_iteratorNormalCompletion && _iterator.return) {
+	              _iterator.return();
+	            }
+	          } finally {
+	            if (_didIteratorError) {
+	              throw _iteratorError;
+	            }
+	          }
+	        }
+	      }
+	    },
 	    read: function read(booking, result) {
 	      booking.read = result;
 	
@@ -36947,9 +37015,8 @@
 	        });
 	      }
 	    },
-	    reply: function reply(booking) {
-	      this.currentBooking = booking;
-	      this.replyDialogueOpen = true;
+	    sms: function sms(booking) {
+	      this.smsBooking = booking;
 	    },
 	    toggleOrder: function toggleOrder(column) {
 	      if (this.orderBy === column) {
@@ -37010,6 +37077,11 @@
 	        console.log(response);
 	        //window.location.href = response.htmlLink;
 	      });
+	    },
+	    saveSMS: function saveSMS(result) {
+	      var node = firebase.database().ref('bookings').child(result.booking.id).child('messages');
+	      var key = node.push().key;
+	      return node.child(key).update(_lodash2.default.pick(result, ['to', 'body']));
 	    }
 	  },
 	  created: function created() {
@@ -52345,243 +52417,6 @@
 	if (typeof __vue_options__ === "function") {
 	  __vue_options__ = __vue_options__.options
 	}
-	__vue_options__.__file = "C:\\Users\\Daniel\\Desktop\\bookings\\src\\components\\dialogue.vue"
-	__vue_options__.render = __vue_template__.render
-	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-	
-	/* hot reload */
-	if (false) {(function () {
-	  var hotAPI = require("vue-hot-reload-api")
-	  hotAPI.install(require("vue"), false)
-	  if (!hotAPI.compatible) return
-	  module.hot.accept()
-	  if (!module.hot.data) {
-	    hotAPI.createRecord("data-v-06ba9314", __vue_options__)
-	  } else {
-	    hotAPI.reload("data-v-06ba9314", __vue_options__)
-	  }
-	})()}
-	if (__vue_options__.functional) {console.error("[vue-loader] dialogue.vue: functional components are not supported and should be defined in plain js files using render functions.")}
-	
-	module.exports = __vue_exports__
-
-
-/***/ },
-/* 432 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-	
-	// load the styles
-	var content = __webpack_require__(433);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(428)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../../node_modules/css-loader/index.js?sourceMap!./../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-06ba9314!./../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./dialogue.vue", function() {
-				var newContent = require("!!./../../node_modules/css-loader/index.js?sourceMap!./../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-06ba9314!./../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./dialogue.vue");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 433 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(312)();
-	// imports
-	
-	
-	// module
-	exports.push([module.id, "\n.my-modal {\n\tposition: fixed;\n\ttop:0;\n\tleft:0;\n\tbottom:0;\n\tright:0;\n\tbackground-color: rgba(0,0,0,0.5);\n}\n.my-modal .modal-body textarea {\n\theight: 40vh;\n}\n", "", {"version":3,"sources":["/./src/components/dialogue.vue?cec378bc"],"names":[],"mappings":";AAwBA;CACA,gBAAA;CACA,MAAA;CACA,OAAA;CACA,SAAA;CACA,QAAA;CACA,kCAAA;CACA;AACA;CACA,aAAA;CACA","file":"dialogue.vue","sourcesContent":["<template>\r\n<form class=\"my-modal\" tabindex=\"-1\" role=\"dialog\" v-show=\"open\">\r\n{{open}}\r\n  <div class=\"modal-dialog\" role=\"document\">\r\n    <div class=\"modal-content\">\r\n      <div class=\"modal-header\">\r\n        <button type=\"button\" class=\"close\" aria-label=\"Close\" \r\n\t\t\t@click=\"closeDialogue\"><span aria-hidden=\"true\">&times;</span></button>\r\n        <h4 class=\"modal-title\">Send Reply</h4>\r\n      </div>\r\n      <div class=\"modal-body\">\r\n        <textarea class=\"form-control\" v-model=\"reply\"></textarea>\r\n\t\t\r\n\t\t\r\n      </div>\r\n      <div class=\"modal-footer\">\r\n        <button type=\"button\" @click=\"closeDialogue\"  class=\"btn btn-default\">Close</button>\r\n        <button type=\"button\" @click=\"sendMessage\" class=\"btn btn-primary\">Send Message</button>\r\n      </div>\r\n    </div><!-- /.modal-content -->\r\n  </div><!-- /.modal-dialog -->\r\n</form><!-- /.modal -->\r\n</template>\r\n<style>\r\n\t.my-modal {\r\n\t\tposition: fixed;\r\n\t\ttop:0;\r\n\t\tleft:0;\r\n\t\tbottom:0;\r\n\t\tright:0;\r\n\t\tbackground-color: rgba(0,0,0,0.5);\r\n\t}\r\n\t.my-modal .modal-body textarea {\r\n\t\theight: 40vh;\r\n\t}\r\n</style>\r\n<script>\r\nexport default {\r\n\tprops:['open', 'booking'],\r\n\tdata() {\r\n\t\treturn {\r\n\t\t\treply: '',\r\n\t\t}\r\n\t}, \r\n\tmethods:{\r\n\t\tcloseDialogue(){\r\n\t\t\tthis.$emit('close');\r\n\t\t},\r\n\t\tsendMessage(){\r\n\t\t\t\r\n\t\t},\r\n\t}\r\n}\r\n</script>\r\n"],"sourceRoot":"webpack://"}]);
-	
-	// exports
-
-
-/***/ },
-/* 434 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	
-	exports.default = {
-		props: ['open', 'booking'],
-		data: function data() {
-			return {
-				reply: ''
-			};
-		},
-	
-		methods: {
-			closeDialogue: function closeDialogue() {
-				this.$emit('close');
-			},
-			sendMessage: function sendMessage() {}
-		}
-	};
-
-/***/ },
-/* 435 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._c;
-	  return _c('form', {
-	    directives: [{
-	      name: "show",
-	      rawName: "v-show",
-	      value: (_vm.open),
-	      expression: "open"
-	    }],
-	    staticClass: "my-modal",
-	    attrs: {
-	      "tabindex": "-1",
-	      "role": "dialog"
-	    }
-	  }, [_vm._v("\r\n" + _vm._s(_vm.open) + "\r\n  "), _c('div', {
-	    staticClass: "modal-dialog",
-	    attrs: {
-	      "role": "document"
-	    }
-	  }, [_c('div', {
-	    staticClass: "modal-content"
-	  }, [_c('div', {
-	    staticClass: "modal-header"
-	  }, [_c('button', {
-	    staticClass: "close",
-	    attrs: {
-	      "type": "button",
-	      "aria-label": "Close"
-	    },
-	    on: {
-	      "click": _vm.closeDialogue
-	    }
-	  }, [_c('span', {
-	    attrs: {
-	      "aria-hidden": "true"
-	    }
-	  }, [_vm._v("×")])]), _vm._v(" "), _c('h4', {
-	    staticClass: "modal-title"
-	  }, [_vm._v("Send Reply")])]), _vm._v(" "), _c('div', {
-	    staticClass: "modal-body"
-	  }, [_c('textarea', {
-	    directives: [{
-	      name: "model",
-	      rawName: "v-model",
-	      value: (_vm.reply),
-	      expression: "reply"
-	    }],
-	    staticClass: "form-control",
-	    domProps: {
-	      "value": _vm._s(_vm.reply)
-	    },
-	    on: {
-	      "input": function($event) {
-	        if ($event.target.composing) { return; }
-	        _vm.reply = $event.target.value
-	      }
-	    }
-	  })]), _vm._v(" "), _c('div', {
-	    staticClass: "modal-footer"
-	  }, [_c('button', {
-	    staticClass: "btn btn-default",
-	    attrs: {
-	      "type": "button"
-	    },
-	    on: {
-	      "click": _vm.closeDialogue
-	    }
-	  }, [_vm._v("Close")]), _vm._v(" "), _c('button', {
-	    staticClass: "btn btn-primary",
-	    attrs: {
-	      "type": "button"
-	    },
-	    on: {
-	      "click": _vm.sendMessage
-	    }
-	  }, [_vm._v("Send Message")])])])])])
-	},staticRenderFns: []}
-	module.exports.render._withStripped = true
-	if (false) {
-	  module.hot.accept()
-	  if (module.hot.data) {
-	     require("vue-hot-reload-api").rerender("data-v-06ba9314", module.exports)
-	  }
-	}
-
-/***/ },
-/* 436 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __vue_exports__, __vue_options__
-	var __vue_styles__ = {}
-	
-	/* styles */
-	__webpack_require__(437)
-	
-	/* script */
-	__vue_exports__ = __webpack_require__(439)
-	
-	/* template */
-	var __vue_template__ = __webpack_require__(440)
-	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
-	if (
-	  typeof __vue_exports__.default === "object" ||
-	  typeof __vue_exports__.default === "function"
-	) {
-	if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
-	__vue_options__ = __vue_exports__ = __vue_exports__.default
-	}
-	if (typeof __vue_options__ === "function") {
-	  __vue_options__ = __vue_options__.options
-	}
 	__vue_options__.__file = "C:\\Users\\Daniel\\Desktop\\bookings\\src\\components\\calendar.vue"
 	__vue_options__.render = __vue_template__.render
 	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
@@ -52604,13 +52439,13 @@
 
 
 /***/ },
-/* 437 */
+/* 432 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(438);
+	var content = __webpack_require__(433);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(313)(content, {});
@@ -52630,7 +52465,7 @@
 	}
 
 /***/ },
-/* 438 */
+/* 433 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(312)();
@@ -52644,7 +52479,7 @@
 
 
 /***/ },
-/* 439 */
+/* 434 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -52810,7 +52645,7 @@
 	//
 
 /***/ },
-/* 440 */
+/* 435 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._c;
@@ -52861,7 +52696,7 @@
 	}
 
 /***/ },
-/* 441 */
+/* 436 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -52887,7 +52722,7 @@
 	}
 
 /***/ },
-/* 442 */
+/* 437 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
@@ -52958,7 +52793,7 @@
 	// ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 	// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 	
-	var util = __webpack_require__(443);
+	var util = __webpack_require__(438);
 	var hasOwn = Object.prototype.hasOwnProperty;
 	var pSlice = Array.prototype.slice;
 	var functionsHaveNames = (function () {
@@ -53384,7 +53219,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 443 */
+/* 438 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -53912,7 +53747,7 @@
 	}
 	exports.isPrimitive = isPrimitive;
 	
-	exports.isBuffer = __webpack_require__(444);
+	exports.isBuffer = __webpack_require__(439);
 	
 	function objectToString(o) {
 	  return Object.prototype.toString.call(o);
@@ -53956,7 +53791,7 @@
 	 *     prototype.
 	 * @param {function} superCtor Constructor function to inherit prototype from.
 	 */
-	exports.inherits = __webpack_require__(445);
+	exports.inherits = __webpack_require__(440);
 	
 	exports._extend = function(origin, add) {
 	  // Don't do anything if add isn't an object
@@ -53977,7 +53812,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(294)))
 
 /***/ },
-/* 444 */
+/* 439 */
 /***/ function(module, exports) {
 
 	module.exports = function isBuffer(arg) {
@@ -53988,7 +53823,7 @@
 	}
 
 /***/ },
-/* 445 */
+/* 440 */
 /***/ function(module, exports) {
 
 	if (typeof Object.create === 'function') {
@@ -54017,19 +53852,3159 @@
 
 
 /***/ },
+/* 441 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_exports__, __vue_options__
+	var __vue_styles__ = {}
+	
+	/* styles */
+	__webpack_require__(442)
+	
+	/* script */
+	__vue_exports__ = __webpack_require__(444)
+	
+	/* template */
+	var __vue_template__ = __webpack_require__(484)
+	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+	if (
+	  typeof __vue_exports__.default === "object" ||
+	  typeof __vue_exports__.default === "function"
+	) {
+	if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+	__vue_options__ = __vue_exports__ = __vue_exports__.default
+	}
+	if (typeof __vue_options__ === "function") {
+	  __vue_options__ = __vue_options__.options
+	}
+	__vue_options__.__file = "C:\\Users\\Daniel\\Desktop\\bookings\\src\\components\\sms-dialog.vue"
+	__vue_options__.render = __vue_template__.render
+	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	
+	/* hot reload */
+	if (false) {(function () {
+	  var hotAPI = require("vue-hot-reload-api")
+	  hotAPI.install(require("vue"), false)
+	  if (!hotAPI.compatible) return
+	  module.hot.accept()
+	  if (!module.hot.data) {
+	    hotAPI.createRecord("data-v-b1c7754c", __vue_options__)
+	  } else {
+	    hotAPI.reload("data-v-b1c7754c", __vue_options__)
+	  }
+	})()}
+	if (__vue_options__.functional) {console.error("[vue-loader] sms-dialog.vue: functional components are not supported and should be defined in plain js files using render functions.")}
+	
+	module.exports = __vue_exports__
+
+
+/***/ },
+/* 442 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(443);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(428)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js?sourceMap!./../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-b1c7754c!./../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./sms-dialog.vue", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js?sourceMap!./../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-b1c7754c!./../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./sms-dialog.vue");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 443 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(312)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "\n.my-modal .modal-body textarea {\n\theight: 40vh;\n}\n", "", {"version":3,"sources":["/./src/components/sms-dialog.vue?024b3c9d"],"names":[],"mappings":";AAsBA;CACA,aAAA;CACA","file":"sms-dialog.vue","sourcesContent":["<template>\r\n  <dialog-base @close=\"$emit('close')\" action-label=\"Send Message\" @action=\"sendSMS\">\r\n    <div slot=\"title\">\r\n      Send SMS\r\n    </div>\r\n    <div>\r\n      <label>\r\n        Send to:\r\n        <my-bubble v-for=\"(recipient, index) in recipients\" :key=\"recipient\">\r\n          <recipient-select :value=\"recipient\" @input=\"recipients[index] = $event\"></recipient-select>\r\n          <button type=\"button\" class=\"btn btn-link btn-xs\" @click=\"recipients.splice(index, 1)\">\r\n            &times;\r\n          </button>\r\n        </my-bubble>\r\n        <recipient-select :key=\"recipients.length\" value=\"\" @input=\"newRecipient($event)\"></recipient-select>\r\n      </label>\r\n      <textarea class=\"form-control\" v-model=\"reply\"></textarea>\r\n      {{reply.length}}\r\n    </div>\r\n  </dialog-base>\r\n</template>\r\n<style>\r\n\t.my-modal .modal-body textarea {\r\n\t\theight: 40vh;\r\n\t}\r\n</style>\r\n<script>\r\nimport axios from 'axios';\r\n\r\nexport default {\r\n\tprops:['open', 'booking'],\r\n  components: {\r\n    RecipientSelect: require('./recipient-select.vue'),\r\n    MyBubble: require('./my-bubble.vue'),\r\n    DialogBase: require('./dialog-base.vue')\r\n  },\r\n\tdata() {\r\n\t\treturn {\r\n\t\t\treply: '',\r\n      recipients: [],\r\n\t\t}\r\n\t},\r\n  created() {\r\n    let booking = this.booking;\r\n\r\n    if (!booking) return;\r\n\r\n    this.reply = [\r\n`${booking.pickupTime.substr(0, 16)}`,\r\n`${booking.pickupLocation} to ${booking.dropoffLocation}`,\r\n`${booking.twoWay !== '-' ? booking.twoWay : '1-way' }`,\r\n`Pt ${booking.patientName}`,\r\nbooking.wheelchairStretcher,\r\nbooking.oxygenRate && (+booking.oxygenRate) && `O2@${booking.oxygenRate}L/m`,\r\n`Prec: ${booking.precautions}`,\r\n`Acc by ${booking.accompanyingPassengers}`,\r\n`Contact: ${booking.contactPhone}`\r\n    ].filter(x => x)\r\n      .join('\\n')\r\n      .trim()\r\n      .replace(/orange valley nursing home/ig, 'OVNH') // some \"intelligent\" substitutions :)\r\n  },\r\n\tmethods: {\r\n    newRecipient(who) {\r\n      if (this.recipients.indexOf(who) == -1) {\r\n        this.recipients.push(who)\r\n      }\r\n    },\r\n    sendSMS() {\r\n      var resp = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse();\r\n\r\n      axios.post('https://enquiry.ambulanceservice.com.sg/sms', {\r\n        id_token: resp.id_token,\r\n        body: this.reply.trim(),\r\n        to: this.recipients,\r\n      })\r\n      .then(() => {\r\n        this.$emit('close')\r\n        this.$emit('sent-sms', {\r\n          booking: this.booking,\r\n          body: this.reply.trim(),\r\n          to: this.recipients,\r\n          timestamp: new Date().toISOString()\r\n        })\r\n      })\r\n    }\r\n\t}\r\n}\r\n</script>\r\n"],"sourceRoot":"webpack://"}]);
+	
+	// exports
+
+
+/***/ },
+/* 444 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _axios = __webpack_require__(445);
+	
+	var _axios2 = _interopRequireDefault(_axios);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	exports.default = {
+	  props: ['open', 'booking'],
+	  components: {
+	    RecipientSelect: __webpack_require__(470),
+	    MyBubble: __webpack_require__(475),
+	    DialogBase: __webpack_require__(479)
+	  },
+	  data: function data() {
+	    return {
+	      reply: '',
+	      recipients: []
+	    };
+	  },
+	  created: function created() {
+	    var booking = this.booking;
+	
+	    if (!booking) return;
+	
+	    this.reply = ['' + booking.pickupTime.substr(0, 16), booking.pickupLocation + ' to ' + booking.dropoffLocation, '' + (booking.twoWay !== '-' ? booking.twoWay : '1-way'), 'Pt ' + booking.patientName, booking.wheelchairStretcher, booking.oxygenRate && +booking.oxygenRate && 'O2@' + booking.oxygenRate + 'L/m', 'Prec: ' + booking.precautions, 'Acc by ' + booking.accompanyingPassengers, 'Contact: ' + booking.contactPhone].filter(function (x) {
+	      return x;
+	    }).join('\n').trim().replace(/orange valley nursing home/ig, 'OVNH'); // some "intelligent" substitutions :)
+	  },
+	
+	  methods: {
+	    newRecipient: function newRecipient(who) {
+	      if (this.recipients.indexOf(who) == -1) {
+	        this.recipients.push(who);
+	      }
+	    },
+	    sendSMS: function sendSMS() {
+	      var _this = this;
+	
+	      var resp = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse();
+	
+	      _axios2.default.post('https://enquiry.ambulanceservice.com.sg/sms', {
+	        id_token: resp.id_token,
+	        body: this.reply.trim(),
+	        to: this.recipients
+	      }).then(function () {
+	        _this.$emit('close');
+	        _this.$emit('sent-sms', {
+	          booking: _this.booking,
+	          body: _this.reply.trim(),
+	          to: _this.recipients,
+	          timestamp: new Date().toISOString()
+	        });
+	      });
+	    }
+	  }
+	}; //
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
+/***/ },
+/* 445 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(446);
+
+/***/ },
 /* 446 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
+	var utils = __webpack_require__(447);
+	var bind = __webpack_require__(448);
+	var Axios = __webpack_require__(449);
+	var defaults = __webpack_require__(450);
+	
+	/**
+	 * Create an instance of Axios
+	 *
+	 * @param {Object} defaultConfig The default config for the instance
+	 * @return {Axios} A new instance of Axios
+	 */
+	function createInstance(defaultConfig) {
+	  var context = new Axios(defaultConfig);
+	  var instance = bind(Axios.prototype.request, context);
+	
+	  // Copy axios.prototype to instance
+	  utils.extend(instance, Axios.prototype, context);
+	
+	  // Copy context to instance
+	  utils.extend(instance, context);
+	
+	  return instance;
+	}
+	
+	// Create the default instance to be exported
+	var axios = createInstance(defaults);
+	
+	// Expose Axios class to allow class inheritance
+	axios.Axios = Axios;
+	
+	// Factory for creating new instances
+	axios.create = function create(instanceConfig) {
+	  return createInstance(utils.merge(defaults, instanceConfig));
+	};
+	
+	// Expose Cancel & CancelToken
+	axios.Cancel = __webpack_require__(467);
+	axios.CancelToken = __webpack_require__(468);
+	axios.isCancel = __webpack_require__(464);
+	
+	// Expose all/spread
+	axios.all = function all(promises) {
+	  return Promise.all(promises);
+	};
+	axios.spread = __webpack_require__(469);
+	
+	module.exports = axios;
+	
+	// Allow use of default import syntax in TypeScript
+	module.exports.default = axios;
+
+
+/***/ },
+/* 447 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var bind = __webpack_require__(448);
+	
+	/*global toString:true*/
+	
+	// utils is a library of generic helper functions non-specific to axios
+	
+	var toString = Object.prototype.toString;
+	
+	/**
+	 * Determine if a value is an Array
+	 *
+	 * @param {Object} val The value to test
+	 * @returns {boolean} True if value is an Array, otherwise false
+	 */
+	function isArray(val) {
+	  return toString.call(val) === '[object Array]';
+	}
+	
+	/**
+	 * Determine if a value is an ArrayBuffer
+	 *
+	 * @param {Object} val The value to test
+	 * @returns {boolean} True if value is an ArrayBuffer, otherwise false
+	 */
+	function isArrayBuffer(val) {
+	  return toString.call(val) === '[object ArrayBuffer]';
+	}
+	
+	/**
+	 * Determine if a value is a FormData
+	 *
+	 * @param {Object} val The value to test
+	 * @returns {boolean} True if value is an FormData, otherwise false
+	 */
+	function isFormData(val) {
+	  return (typeof FormData !== 'undefined') && (val instanceof FormData);
+	}
+	
+	/**
+	 * Determine if a value is a view on an ArrayBuffer
+	 *
+	 * @param {Object} val The value to test
+	 * @returns {boolean} True if value is a view on an ArrayBuffer, otherwise false
+	 */
+	function isArrayBufferView(val) {
+	  var result;
+	  if ((typeof ArrayBuffer !== 'undefined') && (ArrayBuffer.isView)) {
+	    result = ArrayBuffer.isView(val);
+	  } else {
+	    result = (val) && (val.buffer) && (val.buffer instanceof ArrayBuffer);
+	  }
+	  return result;
+	}
+	
+	/**
+	 * Determine if a value is a String
+	 *
+	 * @param {Object} val The value to test
+	 * @returns {boolean} True if value is a String, otherwise false
+	 */
+	function isString(val) {
+	  return typeof val === 'string';
+	}
+	
+	/**
+	 * Determine if a value is a Number
+	 *
+	 * @param {Object} val The value to test
+	 * @returns {boolean} True if value is a Number, otherwise false
+	 */
+	function isNumber(val) {
+	  return typeof val === 'number';
+	}
+	
+	/**
+	 * Determine if a value is undefined
+	 *
+	 * @param {Object} val The value to test
+	 * @returns {boolean} True if the value is undefined, otherwise false
+	 */
+	function isUndefined(val) {
+	  return typeof val === 'undefined';
+	}
+	
+	/**
+	 * Determine if a value is an Object
+	 *
+	 * @param {Object} val The value to test
+	 * @returns {boolean} True if value is an Object, otherwise false
+	 */
+	function isObject(val) {
+	  return val !== null && typeof val === 'object';
+	}
+	
+	/**
+	 * Determine if a value is a Date
+	 *
+	 * @param {Object} val The value to test
+	 * @returns {boolean} True if value is a Date, otherwise false
+	 */
+	function isDate(val) {
+	  return toString.call(val) === '[object Date]';
+	}
+	
+	/**
+	 * Determine if a value is a File
+	 *
+	 * @param {Object} val The value to test
+	 * @returns {boolean} True if value is a File, otherwise false
+	 */
+	function isFile(val) {
+	  return toString.call(val) === '[object File]';
+	}
+	
+	/**
+	 * Determine if a value is a Blob
+	 *
+	 * @param {Object} val The value to test
+	 * @returns {boolean} True if value is a Blob, otherwise false
+	 */
+	function isBlob(val) {
+	  return toString.call(val) === '[object Blob]';
+	}
+	
+	/**
+	 * Determine if a value is a Function
+	 *
+	 * @param {Object} val The value to test
+	 * @returns {boolean} True if value is a Function, otherwise false
+	 */
+	function isFunction(val) {
+	  return toString.call(val) === '[object Function]';
+	}
+	
+	/**
+	 * Determine if a value is a Stream
+	 *
+	 * @param {Object} val The value to test
+	 * @returns {boolean} True if value is a Stream, otherwise false
+	 */
+	function isStream(val) {
+	  return isObject(val) && isFunction(val.pipe);
+	}
+	
+	/**
+	 * Determine if a value is a URLSearchParams object
+	 *
+	 * @param {Object} val The value to test
+	 * @returns {boolean} True if value is a URLSearchParams object, otherwise false
+	 */
+	function isURLSearchParams(val) {
+	  return typeof URLSearchParams !== 'undefined' && val instanceof URLSearchParams;
+	}
+	
+	/**
+	 * Trim excess whitespace off the beginning and end of a string
+	 *
+	 * @param {String} str The String to trim
+	 * @returns {String} The String freed of excess whitespace
+	 */
+	function trim(str) {
+	  return str.replace(/^\s*/, '').replace(/\s*$/, '');
+	}
+	
+	/**
+	 * Determine if we're running in a standard browser environment
+	 *
+	 * This allows axios to run in a web worker, and react-native.
+	 * Both environments support XMLHttpRequest, but not fully standard globals.
+	 *
+	 * web workers:
+	 *  typeof window -> undefined
+	 *  typeof document -> undefined
+	 *
+	 * react-native:
+	 *  typeof document.createElement -> undefined
+	 */
+	function isStandardBrowserEnv() {
+	  return (
+	    typeof window !== 'undefined' &&
+	    typeof document !== 'undefined' &&
+	    typeof document.createElement === 'function'
+	  );
+	}
+	
+	/**
+	 * Iterate over an Array or an Object invoking a function for each item.
+	 *
+	 * If `obj` is an Array callback will be called passing
+	 * the value, index, and complete array for each item.
+	 *
+	 * If 'obj' is an Object callback will be called passing
+	 * the value, key, and complete object for each property.
+	 *
+	 * @param {Object|Array} obj The object to iterate
+	 * @param {Function} fn The callback to invoke for each item
+	 */
+	function forEach(obj, fn) {
+	  // Don't bother if no value provided
+	  if (obj === null || typeof obj === 'undefined') {
+	    return;
+	  }
+	
+	  // Force an array if not already something iterable
+	  if (typeof obj !== 'object' && !isArray(obj)) {
+	    /*eslint no-param-reassign:0*/
+	    obj = [obj];
+	  }
+	
+	  if (isArray(obj)) {
+	    // Iterate over array values
+	    for (var i = 0, l = obj.length; i < l; i++) {
+	      fn.call(null, obj[i], i, obj);
+	    }
+	  } else {
+	    // Iterate over object keys
+	    for (var key in obj) {
+	      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+	        fn.call(null, obj[key], key, obj);
+	      }
+	    }
+	  }
+	}
+	
+	/**
+	 * Accepts varargs expecting each argument to be an object, then
+	 * immutably merges the properties of each object and returns result.
+	 *
+	 * When multiple objects contain the same key the later object in
+	 * the arguments list will take precedence.
+	 *
+	 * Example:
+	 *
+	 * ```js
+	 * var result = merge({foo: 123}, {foo: 456});
+	 * console.log(result.foo); // outputs 456
+	 * ```
+	 *
+	 * @param {Object} obj1 Object to merge
+	 * @returns {Object} Result of all merge properties
+	 */
+	function merge(/* obj1, obj2, obj3, ... */) {
+	  var result = {};
+	  function assignValue(val, key) {
+	    if (typeof result[key] === 'object' && typeof val === 'object') {
+	      result[key] = merge(result[key], val);
+	    } else {
+	      result[key] = val;
+	    }
+	  }
+	
+	  for (var i = 0, l = arguments.length; i < l; i++) {
+	    forEach(arguments[i], assignValue);
+	  }
+	  return result;
+	}
+	
+	/**
+	 * Extends object a by mutably adding to it the properties of object b.
+	 *
+	 * @param {Object} a The object to be extended
+	 * @param {Object} b The object to copy properties from
+	 * @param {Object} thisArg The object to bind function to
+	 * @return {Object} The resulting value of object a
+	 */
+	function extend(a, b, thisArg) {
+	  forEach(b, function assignValue(val, key) {
+	    if (thisArg && typeof val === 'function') {
+	      a[key] = bind(val, thisArg);
+	    } else {
+	      a[key] = val;
+	    }
+	  });
+	  return a;
+	}
+	
+	module.exports = {
+	  isArray: isArray,
+	  isArrayBuffer: isArrayBuffer,
+	  isFormData: isFormData,
+	  isArrayBufferView: isArrayBufferView,
+	  isString: isString,
+	  isNumber: isNumber,
+	  isObject: isObject,
+	  isUndefined: isUndefined,
+	  isDate: isDate,
+	  isFile: isFile,
+	  isBlob: isBlob,
+	  isFunction: isFunction,
+	  isStream: isStream,
+	  isURLSearchParams: isURLSearchParams,
+	  isStandardBrowserEnv: isStandardBrowserEnv,
+	  forEach: forEach,
+	  merge: merge,
+	  extend: extend,
+	  trim: trim
+	};
+
+
+/***/ },
+/* 448 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	module.exports = function bind(fn, thisArg) {
+	  return function wrap() {
+	    var args = new Array(arguments.length);
+	    for (var i = 0; i < args.length; i++) {
+	      args[i] = arguments[i];
+	    }
+	    return fn.apply(thisArg, args);
+	  };
+	};
+
+
+/***/ },
+/* 449 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var defaults = __webpack_require__(450);
+	var utils = __webpack_require__(447);
+	var InterceptorManager = __webpack_require__(461);
+	var dispatchRequest = __webpack_require__(462);
+	var isAbsoluteURL = __webpack_require__(465);
+	var combineURLs = __webpack_require__(466);
+	
+	/**
+	 * Create a new instance of Axios
+	 *
+	 * @param {Object} instanceConfig The default config for the instance
+	 */
+	function Axios(instanceConfig) {
+	  this.defaults = instanceConfig;
+	  this.interceptors = {
+	    request: new InterceptorManager(),
+	    response: new InterceptorManager()
+	  };
+	}
+	
+	/**
+	 * Dispatch a request
+	 *
+	 * @param {Object} config The config specific for this request (merged with this.defaults)
+	 */
+	Axios.prototype.request = function request(config) {
+	  /*eslint no-param-reassign:0*/
+	  // Allow for axios('example/url'[, config]) a la fetch API
+	  if (typeof config === 'string') {
+	    config = utils.merge({
+	      url: arguments[0]
+	    }, arguments[1]);
+	  }
+	
+	  config = utils.merge(defaults, this.defaults, { method: 'get' }, config);
+	
+	  // Support baseURL config
+	  if (config.baseURL && !isAbsoluteURL(config.url)) {
+	    config.url = combineURLs(config.baseURL, config.url);
+	  }
+	
+	  // Hook up interceptors middleware
+	  var chain = [dispatchRequest, undefined];
+	  var promise = Promise.resolve(config);
+	
+	  this.interceptors.request.forEach(function unshiftRequestInterceptors(interceptor) {
+	    chain.unshift(interceptor.fulfilled, interceptor.rejected);
+	  });
+	
+	  this.interceptors.response.forEach(function pushResponseInterceptors(interceptor) {
+	    chain.push(interceptor.fulfilled, interceptor.rejected);
+	  });
+	
+	  while (chain.length) {
+	    promise = promise.then(chain.shift(), chain.shift());
+	  }
+	
+	  return promise;
+	};
+	
+	// Provide aliases for supported request methods
+	utils.forEach(['delete', 'get', 'head'], function forEachMethodNoData(method) {
+	  /*eslint func-names:0*/
+	  Axios.prototype[method] = function(url, config) {
+	    return this.request(utils.merge(config || {}, {
+	      method: method,
+	      url: url
+	    }));
+	  };
+	});
+	
+	utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
+	  /*eslint func-names:0*/
+	  Axios.prototype[method] = function(url, data, config) {
+	    return this.request(utils.merge(config || {}, {
+	      method: method,
+	      url: url,
+	      data: data
+	    }));
+	  };
+	});
+	
+	module.exports = Axios;
+
+
+/***/ },
+/* 450 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+	
+	var utils = __webpack_require__(447);
+	var normalizeHeaderName = __webpack_require__(451);
+	
+	var PROTECTION_PREFIX = /^\)\]\}',?\n/;
+	var DEFAULT_CONTENT_TYPE = {
+	  'Content-Type': 'application/x-www-form-urlencoded'
+	};
+	
+	function setContentTypeIfUnset(headers, value) {
+	  if (!utils.isUndefined(headers) && utils.isUndefined(headers['Content-Type'])) {
+	    headers['Content-Type'] = value;
+	  }
+	}
+	
+	function getDefaultAdapter() {
+	  var adapter;
+	  if (typeof XMLHttpRequest !== 'undefined') {
+	    // For browsers use XHR adapter
+	    adapter = __webpack_require__(452);
+	  } else if (typeof process !== 'undefined') {
+	    // For node use HTTP adapter
+	    adapter = __webpack_require__(452);
+	  }
+	  return adapter;
+	}
+	
+	var defaults = {
+	  adapter: getDefaultAdapter(),
+	
+	  transformRequest: [function transformRequest(data, headers) {
+	    normalizeHeaderName(headers, 'Content-Type');
+	    if (utils.isFormData(data) ||
+	      utils.isArrayBuffer(data) ||
+	      utils.isStream(data) ||
+	      utils.isFile(data) ||
+	      utils.isBlob(data)
+	    ) {
+	      return data;
+	    }
+	    if (utils.isArrayBufferView(data)) {
+	      return data.buffer;
+	    }
+	    if (utils.isURLSearchParams(data)) {
+	      setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
+	      return data.toString();
+	    }
+	    if (utils.isObject(data)) {
+	      setContentTypeIfUnset(headers, 'application/json;charset=utf-8');
+	      return JSON.stringify(data);
+	    }
+	    return data;
+	  }],
+	
+	  transformResponse: [function transformResponse(data) {
+	    /*eslint no-param-reassign:0*/
+	    if (typeof data === 'string') {
+	      data = data.replace(PROTECTION_PREFIX, '');
+	      try {
+	        data = JSON.parse(data);
+	      } catch (e) { /* Ignore */ }
+	    }
+	    return data;
+	  }],
+	
+	  timeout: 0,
+	
+	  xsrfCookieName: 'XSRF-TOKEN',
+	  xsrfHeaderName: 'X-XSRF-TOKEN',
+	
+	  maxContentLength: -1,
+	
+	  validateStatus: function validateStatus(status) {
+	    return status >= 200 && status < 300;
+	  }
+	};
+	
+	defaults.headers = {
+	  common: {
+	    'Accept': 'application/json, text/plain, */*'
+	  }
+	};
+	
+	utils.forEach(['delete', 'get', 'head'], function forEachMehtodNoData(method) {
+	  defaults.headers[method] = {};
+	});
+	
+	utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
+	  defaults.headers[method] = utils.merge(DEFAULT_CONTENT_TYPE);
+	});
+	
+	module.exports = defaults;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294)))
+
+/***/ },
+/* 451 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var utils = __webpack_require__(447);
+	
+	module.exports = function normalizeHeaderName(headers, normalizedName) {
+	  utils.forEach(headers, function processHeader(value, name) {
+	    if (name !== normalizedName && name.toUpperCase() === normalizedName.toUpperCase()) {
+	      headers[normalizedName] = value;
+	      delete headers[name];
+	    }
+	  });
+	};
+
+
+/***/ },
+/* 452 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+	
+	var utils = __webpack_require__(447);
+	var settle = __webpack_require__(453);
+	var buildURL = __webpack_require__(456);
+	var parseHeaders = __webpack_require__(457);
+	var isURLSameOrigin = __webpack_require__(458);
+	var createError = __webpack_require__(454);
+	var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(459);
+	
+	module.exports = function xhrAdapter(config) {
+	  return new Promise(function dispatchXhrRequest(resolve, reject) {
+	    var requestData = config.data;
+	    var requestHeaders = config.headers;
+	
+	    if (utils.isFormData(requestData)) {
+	      delete requestHeaders['Content-Type']; // Let the browser set it
+	    }
+	
+	    var request = new XMLHttpRequest();
+	    var loadEvent = 'onreadystatechange';
+	    var xDomain = false;
+	
+	    // For IE 8/9 CORS support
+	    // Only supports POST and GET calls and doesn't returns the response headers.
+	    // DON'T do this for testing b/c XMLHttpRequest is mocked, not XDomainRequest.
+	    if (process.env.NODE_ENV !== 'test' &&
+	        typeof window !== 'undefined' &&
+	        window.XDomainRequest && !('withCredentials' in request) &&
+	        !isURLSameOrigin(config.url)) {
+	      request = new window.XDomainRequest();
+	      loadEvent = 'onload';
+	      xDomain = true;
+	      request.onprogress = function handleProgress() {};
+	      request.ontimeout = function handleTimeout() {};
+	    }
+	
+	    // HTTP basic authentication
+	    if (config.auth) {
+	      var username = config.auth.username || '';
+	      var password = config.auth.password || '';
+	      requestHeaders.Authorization = 'Basic ' + btoa(username + ':' + password);
+	    }
+	
+	    request.open(config.method.toUpperCase(), buildURL(config.url, config.params, config.paramsSerializer), true);
+	
+	    // Set the request timeout in MS
+	    request.timeout = config.timeout;
+	
+	    // Listen for ready state
+	    request[loadEvent] = function handleLoad() {
+	      if (!request || (request.readyState !== 4 && !xDomain)) {
+	        return;
+	      }
+	
+	      // The request errored out and we didn't get a response, this will be
+	      // handled by onerror instead
+	      // With one exception: request that using file: protocol, most browsers
+	      // will return status as 0 even though it's a successful request
+	      if (request.status === 0 && !(request.responseURL && request.responseURL.indexOf('file:') === 0)) {
+	        return;
+	      }
+	
+	      // Prepare the response
+	      var responseHeaders = 'getAllResponseHeaders' in request ? parseHeaders(request.getAllResponseHeaders()) : null;
+	      var responseData = !config.responseType || config.responseType === 'text' ? request.responseText : request.response;
+	      var response = {
+	        data: responseData,
+	        // IE sends 1223 instead of 204 (https://github.com/mzabriskie/axios/issues/201)
+	        status: request.status === 1223 ? 204 : request.status,
+	        statusText: request.status === 1223 ? 'No Content' : request.statusText,
+	        headers: responseHeaders,
+	        config: config,
+	        request: request
+	      };
+	
+	      settle(resolve, reject, response);
+	
+	      // Clean up request
+	      request = null;
+	    };
+	
+	    // Handle low level network errors
+	    request.onerror = function handleError() {
+	      // Real errors are hidden from us by the browser
+	      // onerror should only fire if it's a network error
+	      reject(createError('Network Error', config));
+	
+	      // Clean up request
+	      request = null;
+	    };
+	
+	    // Handle timeout
+	    request.ontimeout = function handleTimeout() {
+	      reject(createError('timeout of ' + config.timeout + 'ms exceeded', config, 'ECONNABORTED'));
+	
+	      // Clean up request
+	      request = null;
+	    };
+	
+	    // Add xsrf header
+	    // This is only done if running in a standard browser environment.
+	    // Specifically not if we're in a web worker, or react-native.
+	    if (utils.isStandardBrowserEnv()) {
+	      var cookies = __webpack_require__(460);
+	
+	      // Add xsrf header
+	      var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
+	          cookies.read(config.xsrfCookieName) :
+	          undefined;
+	
+	      if (xsrfValue) {
+	        requestHeaders[config.xsrfHeaderName] = xsrfValue;
+	      }
+	    }
+	
+	    // Add headers to the request
+	    if ('setRequestHeader' in request) {
+	      utils.forEach(requestHeaders, function setRequestHeader(val, key) {
+	        if (typeof requestData === 'undefined' && key.toLowerCase() === 'content-type') {
+	          // Remove Content-Type if data is undefined
+	          delete requestHeaders[key];
+	        } else {
+	          // Otherwise add header to the request
+	          request.setRequestHeader(key, val);
+	        }
+	      });
+	    }
+	
+	    // Add withCredentials to request if needed
+	    if (config.withCredentials) {
+	      request.withCredentials = true;
+	    }
+	
+	    // Add responseType to request if needed
+	    if (config.responseType) {
+	      try {
+	        request.responseType = config.responseType;
+	      } catch (e) {
+	        if (request.responseType !== 'json') {
+	          throw e;
+	        }
+	      }
+	    }
+	
+	    // Handle progress if needed
+	    if (typeof config.onDownloadProgress === 'function') {
+	      request.addEventListener('progress', config.onDownloadProgress);
+	    }
+	
+	    // Not all browsers support upload events
+	    if (typeof config.onUploadProgress === 'function' && request.upload) {
+	      request.upload.addEventListener('progress', config.onUploadProgress);
+	    }
+	
+	    if (config.cancelToken) {
+	      // Handle cancellation
+	      config.cancelToken.promise.then(function onCanceled(cancel) {
+	        if (!request) {
+	          return;
+	        }
+	
+	        request.abort();
+	        reject(cancel);
+	        // Clean up request
+	        request = null;
+	      });
+	    }
+	
+	    if (requestData === undefined) {
+	      requestData = null;
+	    }
+	
+	    // Send the request
+	    request.send(requestData);
+	  });
+	};
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294)))
+
+/***/ },
+/* 453 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var createError = __webpack_require__(454);
+	
+	/**
+	 * Resolve or reject a Promise based on response status.
+	 *
+	 * @param {Function} resolve A function that resolves the promise.
+	 * @param {Function} reject A function that rejects the promise.
+	 * @param {object} response The response.
+	 */
+	module.exports = function settle(resolve, reject, response) {
+	  var validateStatus = response.config.validateStatus;
+	  // Note: status is not exposed by XDomainRequest
+	  if (!response.status || !validateStatus || validateStatus(response.status)) {
+	    resolve(response);
+	  } else {
+	    reject(createError(
+	      'Request failed with status code ' + response.status,
+	      response.config,
+	      null,
+	      response
+	    ));
+	  }
+	};
+
+
+/***/ },
+/* 454 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var enhanceError = __webpack_require__(455);
+	
+	/**
+	 * Create an Error with the specified message, config, error code, and response.
+	 *
+	 * @param {string} message The error message.
+	 * @param {Object} config The config.
+	 * @param {string} [code] The error code (for example, 'ECONNABORTED').
+	 @ @param {Object} [response] The response.
+	 * @returns {Error} The created error.
+	 */
+	module.exports = function createError(message, config, code, response) {
+	  var error = new Error(message);
+	  return enhanceError(error, config, code, response);
+	};
+
+
+/***/ },
+/* 455 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	/**
+	 * Update an Error with the specified config, error code, and response.
+	 *
+	 * @param {Error} error The error to update.
+	 * @param {Object} config The config.
+	 * @param {string} [code] The error code (for example, 'ECONNABORTED').
+	 @ @param {Object} [response] The response.
+	 * @returns {Error} The error.
+	 */
+	module.exports = function enhanceError(error, config, code, response) {
+	  error.config = config;
+	  if (code) {
+	    error.code = code;
+	  }
+	  error.response = response;
+	  return error;
+	};
+
+
+/***/ },
+/* 456 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var utils = __webpack_require__(447);
+	
+	function encode(val) {
+	  return encodeURIComponent(val).
+	    replace(/%40/gi, '@').
+	    replace(/%3A/gi, ':').
+	    replace(/%24/g, '$').
+	    replace(/%2C/gi, ',').
+	    replace(/%20/g, '+').
+	    replace(/%5B/gi, '[').
+	    replace(/%5D/gi, ']');
+	}
+	
+	/**
+	 * Build a URL by appending params to the end
+	 *
+	 * @param {string} url The base of the url (e.g., http://www.google.com)
+	 * @param {object} [params] The params to be appended
+	 * @returns {string} The formatted url
+	 */
+	module.exports = function buildURL(url, params, paramsSerializer) {
+	  /*eslint no-param-reassign:0*/
+	  if (!params) {
+	    return url;
+	  }
+	
+	  var serializedParams;
+	  if (paramsSerializer) {
+	    serializedParams = paramsSerializer(params);
+	  } else if (utils.isURLSearchParams(params)) {
+	    serializedParams = params.toString();
+	  } else {
+	    var parts = [];
+	
+	    utils.forEach(params, function serialize(val, key) {
+	      if (val === null || typeof val === 'undefined') {
+	        return;
+	      }
+	
+	      if (utils.isArray(val)) {
+	        key = key + '[]';
+	      }
+	
+	      if (!utils.isArray(val)) {
+	        val = [val];
+	      }
+	
+	      utils.forEach(val, function parseValue(v) {
+	        if (utils.isDate(v)) {
+	          v = v.toISOString();
+	        } else if (utils.isObject(v)) {
+	          v = JSON.stringify(v);
+	        }
+	        parts.push(encode(key) + '=' + encode(v));
+	      });
+	    });
+	
+	    serializedParams = parts.join('&');
+	  }
+	
+	  if (serializedParams) {
+	    url += (url.indexOf('?') === -1 ? '?' : '&') + serializedParams;
+	  }
+	
+	  return url;
+	};
+
+
+/***/ },
+/* 457 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var utils = __webpack_require__(447);
+	
+	/**
+	 * Parse headers into an object
+	 *
+	 * ```
+	 * Date: Wed, 27 Aug 2014 08:58:49 GMT
+	 * Content-Type: application/json
+	 * Connection: keep-alive
+	 * Transfer-Encoding: chunked
+	 * ```
+	 *
+	 * @param {String} headers Headers needing to be parsed
+	 * @returns {Object} Headers parsed into an object
+	 */
+	module.exports = function parseHeaders(headers) {
+	  var parsed = {};
+	  var key;
+	  var val;
+	  var i;
+	
+	  if (!headers) { return parsed; }
+	
+	  utils.forEach(headers.split('\n'), function parser(line) {
+	    i = line.indexOf(':');
+	    key = utils.trim(line.substr(0, i)).toLowerCase();
+	    val = utils.trim(line.substr(i + 1));
+	
+	    if (key) {
+	      parsed[key] = parsed[key] ? parsed[key] + ', ' + val : val;
+	    }
+	  });
+	
+	  return parsed;
+	};
+
+
+/***/ },
+/* 458 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var utils = __webpack_require__(447);
+	
+	module.exports = (
+	  utils.isStandardBrowserEnv() ?
+	
+	  // Standard browser envs have full support of the APIs needed to test
+	  // whether the request URL is of the same origin as current location.
+	  (function standardBrowserEnv() {
+	    var msie = /(msie|trident)/i.test(navigator.userAgent);
+	    var urlParsingNode = document.createElement('a');
+	    var originURL;
+	
+	    /**
+	    * Parse a URL to discover it's components
+	    *
+	    * @param {String} url The URL to be parsed
+	    * @returns {Object}
+	    */
+	    function resolveURL(url) {
+	      var href = url;
+	
+	      if (msie) {
+	        // IE needs attribute set twice to normalize properties
+	        urlParsingNode.setAttribute('href', href);
+	        href = urlParsingNode.href;
+	      }
+	
+	      urlParsingNode.setAttribute('href', href);
+	
+	      // urlParsingNode provides the UrlUtils interface - http://url.spec.whatwg.org/#urlutils
+	      return {
+	        href: urlParsingNode.href,
+	        protocol: urlParsingNode.protocol ? urlParsingNode.protocol.replace(/:$/, '') : '',
+	        host: urlParsingNode.host,
+	        search: urlParsingNode.search ? urlParsingNode.search.replace(/^\?/, '') : '',
+	        hash: urlParsingNode.hash ? urlParsingNode.hash.replace(/^#/, '') : '',
+	        hostname: urlParsingNode.hostname,
+	        port: urlParsingNode.port,
+	        pathname: (urlParsingNode.pathname.charAt(0) === '/') ?
+	                  urlParsingNode.pathname :
+	                  '/' + urlParsingNode.pathname
+	      };
+	    }
+	
+	    originURL = resolveURL(window.location.href);
+	
+	    /**
+	    * Determine if a URL shares the same origin as the current location
+	    *
+	    * @param {String} requestURL The URL to test
+	    * @returns {boolean} True if URL shares the same origin, otherwise false
+	    */
+	    return function isURLSameOrigin(requestURL) {
+	      var parsed = (utils.isString(requestURL)) ? resolveURL(requestURL) : requestURL;
+	      return (parsed.protocol === originURL.protocol &&
+	            parsed.host === originURL.host);
+	    };
+	  })() :
+	
+	  // Non standard browser envs (web workers, react-native) lack needed support.
+	  (function nonStandardBrowserEnv() {
+	    return function isURLSameOrigin() {
+	      return true;
+	    };
+	  })()
+	);
+
+
+/***/ },
+/* 459 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	// btoa polyfill for IE<10 courtesy https://github.com/davidchambers/Base64.js
+	
+	var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+	
+	function E() {
+	  this.message = 'String contains an invalid character';
+	}
+	E.prototype = new Error;
+	E.prototype.code = 5;
+	E.prototype.name = 'InvalidCharacterError';
+	
+	function btoa(input) {
+	  var str = String(input);
+	  var output = '';
+	  for (
+	    // initialize result and counter
+	    var block, charCode, idx = 0, map = chars;
+	    // if the next str index does not exist:
+	    //   change the mapping table to "="
+	    //   check if d has no fractional digits
+	    str.charAt(idx | 0) || (map = '=', idx % 1);
+	    // "8 - idx % 1 * 8" generates the sequence 2, 4, 6, 8
+	    output += map.charAt(63 & block >> 8 - idx % 1 * 8)
+	  ) {
+	    charCode = str.charCodeAt(idx += 3 / 4);
+	    if (charCode > 0xFF) {
+	      throw new E();
+	    }
+	    block = block << 8 | charCode;
+	  }
+	  return output;
+	}
+	
+	module.exports = btoa;
+
+
+/***/ },
+/* 460 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var utils = __webpack_require__(447);
+	
+	module.exports = (
+	  utils.isStandardBrowserEnv() ?
+	
+	  // Standard browser envs support document.cookie
+	  (function standardBrowserEnv() {
+	    return {
+	      write: function write(name, value, expires, path, domain, secure) {
+	        var cookie = [];
+	        cookie.push(name + '=' + encodeURIComponent(value));
+	
+	        if (utils.isNumber(expires)) {
+	          cookie.push('expires=' + new Date(expires).toGMTString());
+	        }
+	
+	        if (utils.isString(path)) {
+	          cookie.push('path=' + path);
+	        }
+	
+	        if (utils.isString(domain)) {
+	          cookie.push('domain=' + domain);
+	        }
+	
+	        if (secure === true) {
+	          cookie.push('secure');
+	        }
+	
+	        document.cookie = cookie.join('; ');
+	      },
+	
+	      read: function read(name) {
+	        var match = document.cookie.match(new RegExp('(^|;\\s*)(' + name + ')=([^;]*)'));
+	        return (match ? decodeURIComponent(match[3]) : null);
+	      },
+	
+	      remove: function remove(name) {
+	        this.write(name, '', Date.now() - 86400000);
+	      }
+	    };
+	  })() :
+	
+	  // Non standard browser env (web workers, react-native) lack needed support.
+	  (function nonStandardBrowserEnv() {
+	    return {
+	      write: function write() {},
+	      read: function read() { return null; },
+	      remove: function remove() {}
+	    };
+	  })()
+	);
+
+
+/***/ },
+/* 461 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var utils = __webpack_require__(447);
+	
+	function InterceptorManager() {
+	  this.handlers = [];
+	}
+	
+	/**
+	 * Add a new interceptor to the stack
+	 *
+	 * @param {Function} fulfilled The function to handle `then` for a `Promise`
+	 * @param {Function} rejected The function to handle `reject` for a `Promise`
+	 *
+	 * @return {Number} An ID used to remove interceptor later
+	 */
+	InterceptorManager.prototype.use = function use(fulfilled, rejected) {
+	  this.handlers.push({
+	    fulfilled: fulfilled,
+	    rejected: rejected
+	  });
+	  return this.handlers.length - 1;
+	};
+	
+	/**
+	 * Remove an interceptor from the stack
+	 *
+	 * @param {Number} id The ID that was returned by `use`
+	 */
+	InterceptorManager.prototype.eject = function eject(id) {
+	  if (this.handlers[id]) {
+	    this.handlers[id] = null;
+	  }
+	};
+	
+	/**
+	 * Iterate over all the registered interceptors
+	 *
+	 * This method is particularly useful for skipping over any
+	 * interceptors that may have become `null` calling `eject`.
+	 *
+	 * @param {Function} fn The function to call for each interceptor
+	 */
+	InterceptorManager.prototype.forEach = function forEach(fn) {
+	  utils.forEach(this.handlers, function forEachHandler(h) {
+	    if (h !== null) {
+	      fn(h);
+	    }
+	  });
+	};
+	
+	module.exports = InterceptorManager;
+
+
+/***/ },
+/* 462 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var utils = __webpack_require__(447);
+	var transformData = __webpack_require__(463);
+	var isCancel = __webpack_require__(464);
+	var defaults = __webpack_require__(450);
+	
+	/**
+	 * Throws a `Cancel` if cancellation has been requested.
+	 */
+	function throwIfCancellationRequested(config) {
+	  if (config.cancelToken) {
+	    config.cancelToken.throwIfRequested();
+	  }
+	}
+	
+	/**
+	 * Dispatch a request to the server using the configured adapter.
+	 *
+	 * @param {object} config The config that is to be used for the request
+	 * @returns {Promise} The Promise to be fulfilled
+	 */
+	module.exports = function dispatchRequest(config) {
+	  throwIfCancellationRequested(config);
+	
+	  // Ensure headers exist
+	  config.headers = config.headers || {};
+	
+	  // Transform request data
+	  config.data = transformData(
+	    config.data,
+	    config.headers,
+	    config.transformRequest
+	  );
+	
+	  // Flatten headers
+	  config.headers = utils.merge(
+	    config.headers.common || {},
+	    config.headers[config.method] || {},
+	    config.headers || {}
+	  );
+	
+	  utils.forEach(
+	    ['delete', 'get', 'head', 'post', 'put', 'patch', 'common'],
+	    function cleanHeaderConfig(method) {
+	      delete config.headers[method];
+	    }
+	  );
+	
+	  var adapter = config.adapter || defaults.adapter;
+	
+	  return adapter(config).then(function onAdapterResolution(response) {
+	    throwIfCancellationRequested(config);
+	
+	    // Transform response data
+	    response.data = transformData(
+	      response.data,
+	      response.headers,
+	      config.transformResponse
+	    );
+	
+	    return response;
+	  }, function onAdapterRejection(reason) {
+	    if (!isCancel(reason)) {
+	      throwIfCancellationRequested(config);
+	
+	      // Transform response data
+	      if (reason && reason.response) {
+	        reason.response.data = transformData(
+	          reason.response.data,
+	          reason.response.headers,
+	          config.transformResponse
+	        );
+	      }
+	    }
+	
+	    return Promise.reject(reason);
+	  });
+	};
+
+
+/***/ },
+/* 463 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var utils = __webpack_require__(447);
+	
+	/**
+	 * Transform the data for a request or a response
+	 *
+	 * @param {Object|String} data The data to be transformed
+	 * @param {Array} headers The headers for the request or response
+	 * @param {Array|Function} fns A single function or Array of functions
+	 * @returns {*} The resulting transformed data
+	 */
+	module.exports = function transformData(data, headers, fns) {
+	  /*eslint no-param-reassign:0*/
+	  utils.forEach(fns, function transform(fn) {
+	    data = fn(data, headers);
+	  });
+	
+	  return data;
+	};
+
+
+/***/ },
+/* 464 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	module.exports = function isCancel(value) {
+	  return !!(value && value.__CANCEL__);
+	};
+
+
+/***/ },
+/* 465 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	/**
+	 * Determines whether the specified URL is absolute
+	 *
+	 * @param {string} url The URL to test
+	 * @returns {boolean} True if the specified URL is absolute, otherwise false
+	 */
+	module.exports = function isAbsoluteURL(url) {
+	  // A URL is considered absolute if it begins with "<scheme>://" or "//" (protocol-relative URL).
+	  // RFC 3986 defines scheme name as a sequence of characters beginning with a letter and followed
+	  // by any combination of letters, digits, plus, period, or hyphen.
+	  return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url);
+	};
+
+
+/***/ },
+/* 466 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	/**
+	 * Creates a new URL by combining the specified URLs
+	 *
+	 * @param {string} baseURL The base URL
+	 * @param {string} relativeURL The relative URL
+	 * @returns {string} The combined URL
+	 */
+	module.exports = function combineURLs(baseURL, relativeURL) {
+	  return baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '');
+	};
+
+
+/***/ },
+/* 467 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	/**
+	 * A `Cancel` is an object that is thrown when an operation is canceled.
+	 *
+	 * @class
+	 * @param {string=} message The message.
+	 */
+	function Cancel(message) {
+	  this.message = message;
+	}
+	
+	Cancel.prototype.toString = function toString() {
+	  return 'Cancel' + (this.message ? ': ' + this.message : '');
+	};
+	
+	Cancel.prototype.__CANCEL__ = true;
+	
+	module.exports = Cancel;
+
+
+/***/ },
+/* 468 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var Cancel = __webpack_require__(467);
+	
+	/**
+	 * A `CancelToken` is an object that can be used to request cancellation of an operation.
+	 *
+	 * @class
+	 * @param {Function} executor The executor function.
+	 */
+	function CancelToken(executor) {
+	  if (typeof executor !== 'function') {
+	    throw new TypeError('executor must be a function.');
+	  }
+	
+	  var resolvePromise;
+	  this.promise = new Promise(function promiseExecutor(resolve) {
+	    resolvePromise = resolve;
+	  });
+	
+	  var token = this;
+	  executor(function cancel(message) {
+	    if (token.reason) {
+	      // Cancellation has already been requested
+	      return;
+	    }
+	
+	    token.reason = new Cancel(message);
+	    resolvePromise(token.reason);
+	  });
+	}
+	
+	/**
+	 * Throws a `Cancel` if cancellation has been requested.
+	 */
+	CancelToken.prototype.throwIfRequested = function throwIfRequested() {
+	  if (this.reason) {
+	    throw this.reason;
+	  }
+	};
+	
+	/**
+	 * Returns an object that contains a new `CancelToken` and a function that, when called,
+	 * cancels the `CancelToken`.
+	 */
+	CancelToken.source = function source() {
+	  var cancel;
+	  var token = new CancelToken(function executor(c) {
+	    cancel = c;
+	  });
+	  return {
+	    token: token,
+	    cancel: cancel
+	  };
+	};
+	
+	module.exports = CancelToken;
+
+
+/***/ },
+/* 469 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	/**
+	 * Syntactic sugar for invoking a function and expanding an array for arguments.
+	 *
+	 * Common use case would be to use `Function.prototype.apply`.
+	 *
+	 *  ```js
+	 *  function f(x, y, z) {}
+	 *  var args = [1, 2, 3];
+	 *  f.apply(null, args);
+	 *  ```
+	 *
+	 * With `spread` this example can be re-written.
+	 *
+	 *  ```js
+	 *  spread(function(x, y, z) {})([1, 2, 3]);
+	 *  ```
+	 *
+	 * @param {Function} callback
+	 * @returns {Function}
+	 */
+	module.exports = function spread(callback) {
+	  return function wrap(arr) {
+	    return callback.apply(null, arr);
+	  };
+	};
+
+
+/***/ },
+/* 470 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_exports__, __vue_options__
+	var __vue_styles__ = {}
+	
+	/* script */
+	__vue_exports__ = __webpack_require__(471)
+	
+	/* template */
+	var __vue_template__ = __webpack_require__(474)
+	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+	if (
+	  typeof __vue_exports__.default === "object" ||
+	  typeof __vue_exports__.default === "function"
+	) {
+	if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+	__vue_options__ = __vue_exports__ = __vue_exports__.default
+	}
+	if (typeof __vue_options__ === "function") {
+	  __vue_options__ = __vue_options__.options
+	}
+	__vue_options__.__file = "C:\\Users\\Daniel\\Desktop\\bookings\\src\\components\\recipient-select.vue"
+	__vue_options__.render = __vue_template__.render
+	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	
+	/* hot reload */
+	if (false) {(function () {
+	  var hotAPI = require("vue-hot-reload-api")
+	  hotAPI.install(require("vue"), false)
+	  if (!hotAPI.compatible) return
+	  module.hot.accept()
+	  if (!module.hot.data) {
+	    hotAPI.createRecord("data-v-3c7c59ce", __vue_options__)
+	  } else {
+	    hotAPI.reload("data-v-3c7c59ce", __vue_options__)
+	  }
+	})()}
+	if (__vue_options__.functional) {console.error("[vue-loader] recipient-select.vue: functional components are not supported and should be defined in plain js files using render functions.")}
+	
+	module.exports = __vue_exports__
+
+
+/***/ },
+/* 471 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _drivers = __webpack_require__(472);
+	
+	var _drivers2 = _interopRequireDefault(_drivers);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	exports.default = {
+	  props: ['value'],
+	  data: function data() {
+	    return {
+	      recipients: (0, _drivers.driversCache)()
+	    };
+	  },
+	  created: function created() {
+	    var _this = this;
+	
+	    _drivers2.default.on('value', function (drivers) {
+	      return _this.recipients = drivers;
+	    });
+	  }
+	}; //
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
+/***/ },
+/* 472 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.driversCache = exports.query = undefined;
+	
+	var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+	
+	var _firebase = __webpack_require__(299);
+	
+	var firebase = _interopRequireWildcard(_firebase);
+	
+	var _events = __webpack_require__(473);
+	
+	var _events2 = _interopRequireDefault(_events);
+	
+	var _lodash = __webpack_require__(305);
+	
+	var _lodash2 = _interopRequireDefault(_lodash);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	var events = new _events2.default();
+	var _query;
+	var _drivers = [];
+	
+	var query = function query() {
+	  return _query;
+	};
+	var driversCache = function driversCache() {
+	  return _drivers;
+	};
+	
+	document.addEventListener('DOMContentLoaded', function () {
+	  _query = firebase.database().ref('drivers');
+	
+	  _query.on('value', function (result) {
+	    events.emit('value', (0, _lodash2.default)(result.val()).toPairs().map(function (_ref) {
+	      var _ref2 = _slicedToArray(_ref, 2),
+	          k = _ref2[0],
+	          v = _ref2[1];
+	
+	      return _lodash2.default.assign({ id: k }, v);
+	    }).orderBy(['name', 'id']).value());
+	  });
+	
+	  events.on('value', function (ds) {
+	    return _drivers = ds;
+	  });
+	});
+	
+	exports.default = events;
+	exports.query = query;
+	exports.driversCache = driversCache;
+
+/***/ },
+/* 473 */
+/***/ function(module, exports) {
+
+	// Copyright Joyent, Inc. and other Node contributors.
+	//
+	// Permission is hereby granted, free of charge, to any person obtaining a
+	// copy of this software and associated documentation files (the
+	// "Software"), to deal in the Software without restriction, including
+	// without limitation the rights to use, copy, modify, merge, publish,
+	// distribute, sublicense, and/or sell copies of the Software, and to permit
+	// persons to whom the Software is furnished to do so, subject to the
+	// following conditions:
+	//
+	// The above copyright notice and this permission notice shall be included
+	// in all copies or substantial portions of the Software.
+	//
+	// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+	// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+	// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+	// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+	// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+	// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+	// USE OR OTHER DEALINGS IN THE SOFTWARE.
+	
+	function EventEmitter() {
+	  this._events = this._events || {};
+	  this._maxListeners = this._maxListeners || undefined;
+	}
+	module.exports = EventEmitter;
+	
+	// Backwards-compat with node 0.10.x
+	EventEmitter.EventEmitter = EventEmitter;
+	
+	EventEmitter.prototype._events = undefined;
+	EventEmitter.prototype._maxListeners = undefined;
+	
+	// By default EventEmitters will print a warning if more than 10 listeners are
+	// added to it. This is a useful default which helps finding memory leaks.
+	EventEmitter.defaultMaxListeners = 10;
+	
+	// Obviously not all Emitters should be limited to 10. This function allows
+	// that to be increased. Set to zero for unlimited.
+	EventEmitter.prototype.setMaxListeners = function(n) {
+	  if (!isNumber(n) || n < 0 || isNaN(n))
+	    throw TypeError('n must be a positive number');
+	  this._maxListeners = n;
+	  return this;
+	};
+	
+	EventEmitter.prototype.emit = function(type) {
+	  var er, handler, len, args, i, listeners;
+	
+	  if (!this._events)
+	    this._events = {};
+	
+	  // If there is no 'error' event listener then throw.
+	  if (type === 'error') {
+	    if (!this._events.error ||
+	        (isObject(this._events.error) && !this._events.error.length)) {
+	      er = arguments[1];
+	      if (er instanceof Error) {
+	        throw er; // Unhandled 'error' event
+	      } else {
+	        // At least give some kind of context to the user
+	        var err = new Error('Uncaught, unspecified "error" event. (' + er + ')');
+	        err.context = er;
+	        throw err;
+	      }
+	    }
+	  }
+	
+	  handler = this._events[type];
+	
+	  if (isUndefined(handler))
+	    return false;
+	
+	  if (isFunction(handler)) {
+	    switch (arguments.length) {
+	      // fast cases
+	      case 1:
+	        handler.call(this);
+	        break;
+	      case 2:
+	        handler.call(this, arguments[1]);
+	        break;
+	      case 3:
+	        handler.call(this, arguments[1], arguments[2]);
+	        break;
+	      // slower
+	      default:
+	        args = Array.prototype.slice.call(arguments, 1);
+	        handler.apply(this, args);
+	    }
+	  } else if (isObject(handler)) {
+	    args = Array.prototype.slice.call(arguments, 1);
+	    listeners = handler.slice();
+	    len = listeners.length;
+	    for (i = 0; i < len; i++)
+	      listeners[i].apply(this, args);
+	  }
+	
+	  return true;
+	};
+	
+	EventEmitter.prototype.addListener = function(type, listener) {
+	  var m;
+	
+	  if (!isFunction(listener))
+	    throw TypeError('listener must be a function');
+	
+	  if (!this._events)
+	    this._events = {};
+	
+	  // To avoid recursion in the case that type === "newListener"! Before
+	  // adding it to the listeners, first emit "newListener".
+	  if (this._events.newListener)
+	    this.emit('newListener', type,
+	              isFunction(listener.listener) ?
+	              listener.listener : listener);
+	
+	  if (!this._events[type])
+	    // Optimize the case of one listener. Don't need the extra array object.
+	    this._events[type] = listener;
+	  else if (isObject(this._events[type]))
+	    // If we've already got an array, just append.
+	    this._events[type].push(listener);
+	  else
+	    // Adding the second element, need to change to array.
+	    this._events[type] = [this._events[type], listener];
+	
+	  // Check for listener leak
+	  if (isObject(this._events[type]) && !this._events[type].warned) {
+	    if (!isUndefined(this._maxListeners)) {
+	      m = this._maxListeners;
+	    } else {
+	      m = EventEmitter.defaultMaxListeners;
+	    }
+	
+	    if (m && m > 0 && this._events[type].length > m) {
+	      this._events[type].warned = true;
+	      console.error('(node) warning: possible EventEmitter memory ' +
+	                    'leak detected. %d listeners added. ' +
+	                    'Use emitter.setMaxListeners() to increase limit.',
+	                    this._events[type].length);
+	      if (typeof console.trace === 'function') {
+	        // not supported in IE 10
+	        console.trace();
+	      }
+	    }
+	  }
+	
+	  return this;
+	};
+	
+	EventEmitter.prototype.on = EventEmitter.prototype.addListener;
+	
+	EventEmitter.prototype.once = function(type, listener) {
+	  if (!isFunction(listener))
+	    throw TypeError('listener must be a function');
+	
+	  var fired = false;
+	
+	  function g() {
+	    this.removeListener(type, g);
+	
+	    if (!fired) {
+	      fired = true;
+	      listener.apply(this, arguments);
+	    }
+	  }
+	
+	  g.listener = listener;
+	  this.on(type, g);
+	
+	  return this;
+	};
+	
+	// emits a 'removeListener' event iff the listener was removed
+	EventEmitter.prototype.removeListener = function(type, listener) {
+	  var list, position, length, i;
+	
+	  if (!isFunction(listener))
+	    throw TypeError('listener must be a function');
+	
+	  if (!this._events || !this._events[type])
+	    return this;
+	
+	  list = this._events[type];
+	  length = list.length;
+	  position = -1;
+	
+	  if (list === listener ||
+	      (isFunction(list.listener) && list.listener === listener)) {
+	    delete this._events[type];
+	    if (this._events.removeListener)
+	      this.emit('removeListener', type, listener);
+	
+	  } else if (isObject(list)) {
+	    for (i = length; i-- > 0;) {
+	      if (list[i] === listener ||
+	          (list[i].listener && list[i].listener === listener)) {
+	        position = i;
+	        break;
+	      }
+	    }
+	
+	    if (position < 0)
+	      return this;
+	
+	    if (list.length === 1) {
+	      list.length = 0;
+	      delete this._events[type];
+	    } else {
+	      list.splice(position, 1);
+	    }
+	
+	    if (this._events.removeListener)
+	      this.emit('removeListener', type, listener);
+	  }
+	
+	  return this;
+	};
+	
+	EventEmitter.prototype.removeAllListeners = function(type) {
+	  var key, listeners;
+	
+	  if (!this._events)
+	    return this;
+	
+	  // not listening for removeListener, no need to emit
+	  if (!this._events.removeListener) {
+	    if (arguments.length === 0)
+	      this._events = {};
+	    else if (this._events[type])
+	      delete this._events[type];
+	    return this;
+	  }
+	
+	  // emit removeListener for all listeners on all events
+	  if (arguments.length === 0) {
+	    for (key in this._events) {
+	      if (key === 'removeListener') continue;
+	      this.removeAllListeners(key);
+	    }
+	    this.removeAllListeners('removeListener');
+	    this._events = {};
+	    return this;
+	  }
+	
+	  listeners = this._events[type];
+	
+	  if (isFunction(listeners)) {
+	    this.removeListener(type, listeners);
+	  } else if (listeners) {
+	    // LIFO order
+	    while (listeners.length)
+	      this.removeListener(type, listeners[listeners.length - 1]);
+	  }
+	  delete this._events[type];
+	
+	  return this;
+	};
+	
+	EventEmitter.prototype.listeners = function(type) {
+	  var ret;
+	  if (!this._events || !this._events[type])
+	    ret = [];
+	  else if (isFunction(this._events[type]))
+	    ret = [this._events[type]];
+	  else
+	    ret = this._events[type].slice();
+	  return ret;
+	};
+	
+	EventEmitter.prototype.listenerCount = function(type) {
+	  if (this._events) {
+	    var evlistener = this._events[type];
+	
+	    if (isFunction(evlistener))
+	      return 1;
+	    else if (evlistener)
+	      return evlistener.length;
+	  }
+	  return 0;
+	};
+	
+	EventEmitter.listenerCount = function(emitter, type) {
+	  return emitter.listenerCount(type);
+	};
+	
+	function isFunction(arg) {
+	  return typeof arg === 'function';
+	}
+	
+	function isNumber(arg) {
+	  return typeof arg === 'number';
+	}
+	
+	function isObject(arg) {
+	  return typeof arg === 'object' && arg !== null;
+	}
+	
+	function isUndefined(arg) {
+	  return arg === void 0;
+	}
+
+
+/***/ },
+/* 474 */
+/***/ function(module, exports, __webpack_require__) {
+
 	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._c;
-	  return _c('div', [(!_vm.user) ? _c('div', [_c('button', {
+	  return _c('select', {
+	    domProps: {
+	      "value": _vm.value
+	    },
+	    on: {
+	      "input": function($event) {
+	        _vm.$emit('input', $event.target.value)
+	      }
+	    }
+	  }, [_c('option', {
+	    attrs: {
+	      "disabled": "",
+	      "value": "",
+	      "selected": ""
+	    },
+	    domProps: {
+	      "value": "",
+	      "selected": true
+	    }
+	  }, [_vm._v("Select a recipient...")]), _vm._v(" "), _c('option', {
+	    attrs: {
+	      "disabled": "",
+	      "value": ""
+	    },
+	    domProps: {
+	      "value": ""
+	    }
+	  }, [_vm._v("-------------")]), _vm._v(" "), _vm._l((_vm.recipients), function(recipient) {
+	    return _c('option', {
+	      domProps: {
+	        "value": recipient.telephone
+	      }
+	    }, [_vm._v(_vm._s(recipient.name))])
+	  })], 2)
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
+	if (false) {
+	  module.hot.accept()
+	  if (module.hot.data) {
+	     require("vue-hot-reload-api").rerender("data-v-3c7c59ce", module.exports)
+	  }
+	}
+
+/***/ },
+/* 475 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_exports__, __vue_options__
+	var __vue_styles__ = {}
+	
+	/* styles */
+	__webpack_require__(476)
+	
+	/* template */
+	var __vue_template__ = __webpack_require__(478)
+	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+	if (
+	  typeof __vue_exports__.default === "object" ||
+	  typeof __vue_exports__.default === "function"
+	) {
+	if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+	__vue_options__ = __vue_exports__ = __vue_exports__.default
+	}
+	if (typeof __vue_options__ === "function") {
+	  __vue_options__ = __vue_options__.options
+	}
+	__vue_options__.__file = "C:\\Users\\Daniel\\Desktop\\bookings\\src\\components\\my-bubble.vue"
+	__vue_options__.render = __vue_template__.render
+	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	
+	/* hot reload */
+	if (false) {(function () {
+	  var hotAPI = require("vue-hot-reload-api")
+	  hotAPI.install(require("vue"), false)
+	  if (!hotAPI.compatible) return
+	  module.hot.accept()
+	  if (!module.hot.data) {
+	    hotAPI.createRecord("data-v-400d869f", __vue_options__)
+	  } else {
+	    hotAPI.reload("data-v-400d869f", __vue_options__)
+	  }
+	})()}
+	if (__vue_options__.functional) {console.error("[vue-loader] my-bubble.vue: functional components are not supported and should be defined in plain js files using render functions.")}
+	
+	module.exports = __vue_exports__
+
+
+/***/ },
+/* 476 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(477);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(428)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js?sourceMap!./../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-400d869f!./../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./my-bubble.vue", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js?sourceMap!./../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-400d869f!./../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./my-bubble.vue");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 477 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(312)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "\n.my-bubble {\r\n  border-radius: 0.5em;\r\n  padding: 0.5em;\r\n  background-color: #DDD;\r\n  margin: 0.25em;\r\n  white-space: nowrap;\r\n  display: inline-block;\n}\r\n", "", {"version":3,"sources":["/./src/components/my-bubble.vue?3d8b4eae"],"names":[],"mappings":";AAOA;EACA,qBAAA;EACA,eAAA;EACA,uBAAA;EACA,eAAA;EACA,oBAAA;EACA,sBAAA;CACA","file":"my-bubble.vue","sourcesContent":["<template>\r\n  <span class=\"my-bubble\">\r\n    <slot></slot>\r\n  </span>\r\n</template>\r\n\r\n<style>\r\n.my-bubble {\r\n  border-radius: 0.5em;\r\n  padding: 0.5em;\r\n  background-color: #DDD;\r\n  margin: 0.25em;\r\n  white-space: nowrap;\r\n  display: inline-block;\r\n}\r\n</style>\r\n"],"sourceRoot":"webpack://"}]);
+	
+	// exports
+
+
+/***/ },
+/* 478 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._c;
+	  return _c('span', {
+	    staticClass: "my-bubble"
+	  }, [_vm._t("default")], 2)
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
+	if (false) {
+	  module.hot.accept()
+	  if (module.hot.data) {
+	     require("vue-hot-reload-api").rerender("data-v-400d869f", module.exports)
+	  }
+	}
+
+/***/ },
+/* 479 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_exports__, __vue_options__
+	var __vue_styles__ = {}
+	
+	/* styles */
+	__webpack_require__(480)
+	
+	/* script */
+	__vue_exports__ = __webpack_require__(482)
+	
+	/* template */
+	var __vue_template__ = __webpack_require__(483)
+	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+	if (
+	  typeof __vue_exports__.default === "object" ||
+	  typeof __vue_exports__.default === "function"
+	) {
+	if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+	__vue_options__ = __vue_exports__ = __vue_exports__.default
+	}
+	if (typeof __vue_options__ === "function") {
+	  __vue_options__ = __vue_options__.options
+	}
+	__vue_options__.__file = "C:\\Users\\Daniel\\Desktop\\bookings\\src\\components\\dialog-base.vue"
+	__vue_options__.render = __vue_template__.render
+	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	
+	/* hot reload */
+	if (false) {(function () {
+	  var hotAPI = require("vue-hot-reload-api")
+	  hotAPI.install(require("vue"), false)
+	  if (!hotAPI.compatible) return
+	  module.hot.accept()
+	  if (!module.hot.data) {
+	    hotAPI.createRecord("data-v-13f30408", __vue_options__)
+	  } else {
+	    hotAPI.reload("data-v-13f30408", __vue_options__)
+	  }
+	})()}
+	if (__vue_options__.functional) {console.error("[vue-loader] dialog-base.vue: functional components are not supported and should be defined in plain js files using render functions.")}
+	
+	module.exports = __vue_exports__
+
+
+/***/ },
+/* 480 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(481);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(428)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js?sourceMap!./../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-13f30408!./../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./dialog-base.vue", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js?sourceMap!./../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-13f30408!./../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./dialog-base.vue");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 481 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(312)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "\n.my-modal {\n\tposition: fixed;\n\ttop:0;\n\tleft:0;\n\tbottom:0;\n\tright:0;\n\tbackground-color: rgba(0,0,0,0.5);\n}\n", "", {"version":3,"sources":["/./src/components/dialog-base.vue?4eb3ee3e"],"names":[],"mappings":";AAwBA;CACA,gBAAA;CACA,MAAA;CACA,OAAA;CACA,SAAA;CACA,QAAA;CACA,kCAAA;CACA","file":"dialog-base.vue","sourcesContent":["<template>\r\n<div class=\"my-modal\" tabindex=\"-1\" role=\"dialog\">\r\n  <div class=\"modal-dialog\" role=\"document\">\r\n    <div class=\"modal-content\">\r\n      <div class=\"modal-header\">\r\n        <slot name=\"title\"></slot>\r\n        <button type=\"button\" class=\"close\" aria-label=\"Close\" @click=\"$emit('close')\">\r\n          <span aria-hidden=\"true\">&times;</span>\r\n        </button>\r\n      </div>\r\n      <div class=\"modal-body\">\r\n        <slot></slot>\r\n      </div>\r\n      <div class=\"modal-footer\">\r\n        <slot name=\"footer\">\r\n          <button type=\"button\" @click=\"$emit('close')\"  class=\"btn btn-default\">Close</button>\r\n          <button type=\"button\" @click=\"$emit('action')\" class=\"btn btn-primary\">{{actionLabel}}</button>\r\n        </slot>\r\n      </div>\r\n    </div><!-- /.modal-content -->\r\n  </div><!-- /.modal-dialog -->\r\n</div><!-- /.modal -->\r\n</template>\r\n<style>\r\n\t.my-modal {\r\n\t\tposition: fixed;\r\n\t\ttop:0;\r\n\t\tleft:0;\r\n\t\tbottom:0;\r\n\t\tright:0;\r\n\t\tbackground-color: rgba(0,0,0,0.5);\r\n\t}\r\n</style>\r\n<script>\r\nexport default {\r\n\tprops:['actionLabel'],\r\n}\r\n</script>\r\n"],"sourceRoot":"webpack://"}]);
+	
+	// exports
+
+
+/***/ },
+/* 482 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	
+	exports.default = {
+		props: ['actionLabel']
+	};
+
+/***/ },
+/* 483 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._c;
+	  return _c('div', {
+	    staticClass: "my-modal",
+	    attrs: {
+	      "tabindex": "-1",
+	      "role": "dialog"
+	    }
+	  }, [_c('div', {
+	    staticClass: "modal-dialog",
+	    attrs: {
+	      "role": "document"
+	    }
+	  }, [_c('div', {
+	    staticClass: "modal-content"
+	  }, [_c('div', {
+	    staticClass: "modal-header"
+	  }, [_vm._t("title"), _vm._v(" "), _c('button', {
+	    staticClass: "close",
+	    attrs: {
+	      "type": "button",
+	      "aria-label": "Close"
+	    },
+	    on: {
+	      "click": function($event) {
+	        _vm.$emit('close')
+	      }
+	    }
+	  }, [_c('span', {
+	    attrs: {
+	      "aria-hidden": "true"
+	    }
+	  }, [_vm._v("×")])])], 2), _vm._v(" "), _c('div', {
+	    staticClass: "modal-body"
+	  }, [_vm._t("default")], 2), _vm._v(" "), _c('div', {
+	    staticClass: "modal-footer"
+	  }, [_vm._t("footer", [_c('button', {
+	    staticClass: "btn btn-default",
+	    attrs: {
+	      "type": "button"
+	    },
+	    on: {
+	      "click": function($event) {
+	        _vm.$emit('close')
+	      }
+	    }
+	  }, [_vm._v("Close")]), _vm._v(" "), _c('button', {
+	    staticClass: "btn btn-primary",
+	    attrs: {
+	      "type": "button"
+	    },
+	    on: {
+	      "click": function($event) {
+	        _vm.$emit('action')
+	      }
+	    }
+	  }, [_vm._v(_vm._s(_vm.actionLabel))])])], 2)])])])
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
+	if (false) {
+	  module.hot.accept()
+	  if (module.hot.data) {
+	     require("vue-hot-reload-api").rerender("data-v-13f30408", module.exports)
+	  }
+	}
+
+/***/ },
+/* 484 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._c;
+	  return _c('dialog-base', {
+	    attrs: {
+	      "action-label": "Send Message"
+	    },
+	    on: {
+	      "close": function($event) {
+	        _vm.$emit('close')
+	      },
+	      "action": _vm.sendSMS
+	    }
+	  }, [_c('div', {
+	    slot: "title"
+	  }, [_vm._v("\n    Send SMS\n  ")]), _vm._v(" "), _c('div', [_c('label', [_vm._v("\n      Send to:\n      "), _vm._l((_vm.recipients), function(recipient, index) {
+	    return _c('my-bubble', {
+	      key: recipient
+	    }, [_c('recipient-select', {
+	      attrs: {
+	        "value": recipient
+	      },
+	      on: {
+	        "input": function($event) {
+	          _vm.recipients[index] = $event
+	        }
+	      }
+	    }), _vm._v(" "), _c('button', {
+	      staticClass: "btn btn-link btn-xs",
+	      attrs: {
+	        "type": "button"
+	      },
+	      on: {
+	        "click": function($event) {
+	          _vm.recipients.splice(index, 1)
+	        }
+	      }
+	    }, [_vm._v("\n          ×\n        ")])], 1)
+	  }), _vm._v(" "), _c('recipient-select', {
+	    key: _vm.recipients.length,
+	    attrs: {
+	      "value": ""
+	    },
+	    on: {
+	      "input": function($event) {
+	        _vm.newRecipient($event)
+	      }
+	    }
+	  })], 2), _vm._v(" "), _c('textarea', {
+	    directives: [{
+	      name: "model",
+	      rawName: "v-model",
+	      value: (_vm.reply),
+	      expression: "reply"
+	    }],
+	    staticClass: "form-control",
+	    domProps: {
+	      "value": _vm._s(_vm.reply)
+	    },
+	    on: {
+	      "input": function($event) {
+	        if ($event.target.composing) { return; }
+	        _vm.reply = $event.target.value
+	      }
+	    }
+	  }), _vm._v("\n    " + _vm._s(_vm.reply.length) + "\n  ")])])
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
+	if (false) {
+	  module.hot.accept()
+	  if (module.hot.data) {
+	     require("vue-hot-reload-api").rerender("data-v-b1c7754c", module.exports)
+	  }
+	}
+
+/***/ },
+/* 485 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_exports__, __vue_options__
+	var __vue_styles__ = {}
+	
+	/* styles */
+	__webpack_require__(486)
+	
+	/* script */
+	__vue_exports__ = __webpack_require__(488)
+	
+	/* template */
+	var __vue_template__ = __webpack_require__(489)
+	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+	if (
+	  typeof __vue_exports__.default === "object" ||
+	  typeof __vue_exports__.default === "function"
+	) {
+	if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+	__vue_options__ = __vue_exports__ = __vue_exports__.default
+	}
+	if (typeof __vue_options__ === "function") {
+	  __vue_options__ = __vue_options__.options
+	}
+	__vue_options__.__file = "C:\\Users\\Daniel\\Desktop\\bookings\\src\\components\\sms-log-dialog.vue"
+	__vue_options__.render = __vue_template__.render
+	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	
+	/* hot reload */
+	if (false) {(function () {
+	  var hotAPI = require("vue-hot-reload-api")
+	  hotAPI.install(require("vue"), false)
+	  if (!hotAPI.compatible) return
+	  module.hot.accept()
+	  if (!module.hot.data) {
+	    hotAPI.createRecord("data-v-0b0662fa", __vue_options__)
+	  } else {
+	    hotAPI.reload("data-v-0b0662fa", __vue_options__)
+	  }
+	})()}
+	if (__vue_options__.functional) {console.error("[vue-loader] sms-log-dialog.vue: functional components are not supported and should be defined in plain js files using render functions.")}
+	
+	module.exports = __vue_exports__
+
+
+/***/ },
+/* 486 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(487);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(428)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js?sourceMap!./../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-0b0662fa!./../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./sms-log-dialog.vue", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js?sourceMap!./../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-0b0662fa!./../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./sms-log-dialog.vue");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 487 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(312)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "\n.my-modal .modal-body textarea {\n\theight: 40vh;\n}\n", "", {"version":3,"sources":["/./src/components/sms-log-dialog.vue?615e5445"],"names":[],"mappings":";AAuCA;CACA,aAAA;CACA","file":"sms-log-dialog.vue","sourcesContent":["<template>\r\n  <dialog-base @close=\"$emit('close')\" action-label=\"Send Message\">\r\n    <div slot=\"title\">\r\n      SMS Log\r\n    </div>\r\n    <div slot=\"footer\">\r\n      <button @click=\"$emit('close')\" class=\"btn btn-default\">\r\n        Close\r\n      </button>\r\n    </div>\r\n    <div>\r\n      <table class=\"table table-striped\">\r\n        <thead>\r\n          <tr>\r\n            <th style=\"width: 25%\">Date</th>\r\n            <th style=\"width: 15%\">Recipient</th>\r\n            <th style=\"width: 60%\">Message</th>\r\n          </tr>\r\n        </thead>\r\n        <tbody>\r\n          <tr v-for=\"message in messages\">\r\n            <td>\r\n              {{filters.formatTime(message.timestamp)}}\r\n            </td>\r\n            <td>\r\n              <template v-for=\"tel in message.to\">\r\n                {{revLookup(tel)}}<br/>\r\n              </template>\r\n            </td>\r\n            <td>\r\n              {{message.body}}\r\n            </td>\r\n          </tr>\r\n        </tbody>\r\n      </table>\r\n    </div>\r\n  </dialog-base>\r\n</template>\r\n<style>\r\n\t.my-modal .modal-body textarea {\r\n\t\theight: 40vh;\r\n\t}\r\n</style>\r\n<script>\r\nimport {driversCache, default as drivers} from '../queries/drivers';\r\nimport * as filters from '../utils/filters';\r\n\r\nexport default {\r\n\tprops:['booking'],\r\n  components: {\r\n    RecipientSelect: require('./recipient-select.vue'),\r\n    MyBubble: require('./my-bubble.vue'),\r\n    DialogBase: require('./dialog-base.vue')\r\n  },\r\n  computed: {\r\n    messages() {\r\n      return _(this.booking.messages)\r\n        .values()\r\n        .orderBy('timestamp', 'desc')\r\n        .value()\r\n    }\r\n  },\r\n  data() {\r\n    return {\r\n      drivers: driversCache(),\r\n      filters\r\n    }\r\n  },\r\n  methods: {\r\n    revLookup(tel) {\r\n      let match = this.drivers.find(x => x.telephone === tel);\r\n      return match ? match.name : tel;\r\n    },\r\n  },\r\n  created() {\r\n    drivers.on('value', ds => this.drivers = ds);\r\n  },\r\n}\r\n</script>\r\n"],"sourceRoot":"webpack://"}]);
+	
+	// exports
+
+
+/***/ },
+/* 488 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _drivers = __webpack_require__(472);
+	
+	var _drivers2 = _interopRequireDefault(_drivers);
+	
+	var _filters = __webpack_require__(436);
+	
+	var filters = _interopRequireWildcard(_filters);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	
+	exports.default = {
+	  props: ['booking'],
+	  components: {
+	    RecipientSelect: __webpack_require__(470),
+	    MyBubble: __webpack_require__(475),
+	    DialogBase: __webpack_require__(479)
+	  },
+	  computed: {
+	    messages: function messages() {
+	      return _(this.booking.messages).values().orderBy('timestamp', 'desc').value();
+	    }
+	  },
+	  data: function data() {
+	    return {
+	      drivers: (0, _drivers.driversCache)(),
+	      filters: filters
+	    };
+	  },
+	
+	  methods: {
+	    revLookup: function revLookup(tel) {
+	      var match = this.drivers.find(function (x) {
+	        return x.telephone === tel;
+	      });
+	      return match ? match.name : tel;
+	    }
+	  },
+	  created: function created() {
+	    var _this = this;
+	
+	    _drivers2.default.on('value', function (ds) {
+	      return _this.drivers = ds;
+	    });
+	  }
+	};
+
+/***/ },
+/* 489 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._c;
+	  return _c('dialog-base', {
+	    attrs: {
+	      "action-label": "Send Message"
+	    },
+	    on: {
+	      "close": function($event) {
+	        _vm.$emit('close')
+	      }
+	    }
+	  }, [_c('div', {
+	    slot: "title"
+	  }, [_vm._v("\n    SMS Log\n  ")]), _vm._v(" "), _c('div', {
+	    slot: "footer"
+	  }, [_c('button', {
+	    staticClass: "btn btn-default",
+	    on: {
+	      "click": function($event) {
+	        _vm.$emit('close')
+	      }
+	    }
+	  }, [_vm._v("\n      Close\n    ")])]), _vm._v(" "), _c('div', [_c('table', {
+	    staticClass: "table table-striped"
+	  }, [_c('thead', [_c('tr', [_c('th', {
+	    staticStyle: {
+	      "width": "25%"
+	    }
+	  }, [_vm._v("Date")]), _vm._v(" "), _c('th', {
+	    staticStyle: {
+	      "width": "15%"
+	    }
+	  }, [_vm._v("Recipient")]), _vm._v(" "), _c('th', {
+	    staticStyle: {
+	      "width": "60%"
+	    }
+	  }, [_vm._v("Message")])])]), _vm._v(" "), _c('tbody', _vm._l((_vm.messages), function(message) {
+	    return _c('tr', [_c('td', [_vm._v("\n            " + _vm._s(_vm.filters.formatTime(message.timestamp)) + "\n          ")]), _vm._v(" "), _c('td', [_vm._l((message.to), function(tel) {
+	      return [_vm._v("\n              " + _vm._s(_vm.revLookup(tel))), _c('br')]
+	    })], 2), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(message.body) + "\n          ")])])
+	  }))])])])
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
+	if (false) {
+	  module.hot.accept()
+	  if (module.hot.data) {
+	     require("vue-hot-reload-api").rerender("data-v-0b0662fa", module.exports)
+	  }
+	}
+
+/***/ },
+/* 490 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_exports__, __vue_options__
+	var __vue_styles__ = {}
+	
+	/* styles */
+	__webpack_require__(491)
+	
+	/* script */
+	__vue_exports__ = __webpack_require__(493)
+	
+	/* template */
+	var __vue_template__ = __webpack_require__(494)
+	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+	if (
+	  typeof __vue_exports__.default === "object" ||
+	  typeof __vue_exports__.default === "function"
+	) {
+	if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+	__vue_options__ = __vue_exports__ = __vue_exports__.default
+	}
+	if (typeof __vue_options__ === "function") {
+	  __vue_options__ = __vue_options__.options
+	}
+	__vue_options__.__file = "C:\\Users\\Daniel\\Desktop\\bookings\\src\\components\\drivers-dialog.vue"
+	__vue_options__.render = __vue_template__.render
+	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+	
+	/* hot reload */
+	if (false) {(function () {
+	  var hotAPI = require("vue-hot-reload-api")
+	  hotAPI.install(require("vue"), false)
+	  if (!hotAPI.compatible) return
+	  module.hot.accept()
+	  if (!module.hot.data) {
+	    hotAPI.createRecord("data-v-582651b0", __vue_options__)
+	  } else {
+	    hotAPI.reload("data-v-582651b0", __vue_options__)
+	  }
+	})()}
+	if (__vue_options__.functional) {console.error("[vue-loader] drivers-dialog.vue: functional components are not supported and should be defined in plain js files using render functions.")}
+	
+	module.exports = __vue_exports__
+
+
+/***/ },
+/* 491 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(492);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(313)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-582651b0!./../../node_modules/sass-loader/index.js!./../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./drivers-dialog.vue", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-582651b0!./../../node_modules/sass-loader/index.js!./../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./drivers-dialog.vue");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 492 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(312)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "\n.is-invalid td {\n  background-color: #FDD;\n}\n", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 493 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _drivers = __webpack_require__(472);
+	
+	var _drivers2 = _interopRequireDefault(_drivers);
+	
+	var _lodash = __webpack_require__(305);
+	
+	var _lodash2 = _interopRequireDefault(_lodash);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	exports.default = {
+	  props: ['open', 'booking'],
+	  components: {
+	    DialogBase: __webpack_require__(479)
+	  },
+	  data: function data() {
+	    return {
+	      rawDrivers: (0, _drivers.driversCache)(),
+	      draftDrivers: [],
+	      query: '',
+	      filters: {
+	        isValid: function isValid(driver) {
+	          // Hard code Singapore number first
+	          return driver.name && /^\+65[0-9]{8}$/.test(driver.telephone);
+	        },
+	        fixTelephone: function fixTelephone(driver) {
+	          if (/^[0-9]{8}$/.test(driver.telephone)) {
+	            driver.telephone = '+65' + driver.telephone;
+	          }
+	        }
+	      }
+	    };
+	  },
+	
+	  methods: {
+	    deleteDriver: function deleteDriver(driver) {
+	      (0, _drivers.query)().child(driver.id).remove();
+	    },
+	    addDriver: function addDriver(driver) {
+	      this.draftDrivers.push({ name: '', telephone: '' });
+	    },
+	    trySave: function trySave(driver) {
+	      this.filters.fixTelephone(driver);
+	      if (this.filters.isValid(driver)) {
+	        if (!driver.id) {
+	          driver.id = (0, _drivers.query)().push().key;
+	        }
+	        (0, _drivers.query)().child(driver.id).update(driver);
+	      }
+	    }
+	  },
+	  created: function created() {
+	    var _this = this;
+	
+	    _drivers2.default.on('value', function (drivers) {
+	      return _this.rawDrivers = drivers;
+	    });
+	  },
+	
+	  computed: {
+	    combinedDrivers: function combinedDrivers() {
+	      var draftedDriverIds = _lodash2.default.keyBy(this.draftDrivers.filter(function (d) {
+	        return d.id;
+	      }), 'id');
+	      var driversById = _lodash2.default.keyBy(this.rawDrivers, 'id');
+	
+	      var drivers = this.rawDrivers.filter(function (d) {
+	        return !draftedDriverIds[d.id];
+	      });
+	      var draftDrivers = this.draftDrivers.map(function (d) {
+	        return d.id ? driversById[d.id] : d;
+	      });
+	
+	      return drivers.concat(draftDrivers);
+	    }
+	  }
+	}; //
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+
+/***/ },
+/* 494 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._c;
+	  return _c('dialog-base', {
+	    on: {
+	      "close": function($event) {
+	        _vm.$emit('close')
+	      }
+	    }
+	  }, [_c('div', {
+	    slot: "title"
+	  }, [_vm._v("\n    Manage drivers\n  ")]), _vm._v(" "), _c('div', {
+	    slot: "footer"
+	  }, [_c('button', {
+	    staticClass: "btn btn-default",
+	    attrs: {
+	      "type": "button"
+	    },
+	    on: {
+	      "click": function($event) {
+	        _vm.$emit('close')
+	      }
+	    }
+	  }, [_vm._v("Close")])]), _vm._v(" "), _c('div', [_vm._v("\n    Drivers:\n    "), _c('table', {
+	    staticClass: "table table-striped"
+	  }, [_c('thead', [_c('tr', [_c('th', [_vm._v("Name")]), _vm._v(" "), _c('th', [_vm._v("Driver")]), _vm._v(" "), _c('th')])]), _vm._v(" "), _c('tbody', _vm._l((_vm.combinedDrivers), function(driver) {
+	    return _c('tr', {
+	      key: driver.id,
+	      class: {
+	        'is-invalid': !_vm.filters.isValid(driver)
+	      }
+	    }, [_c('td', [_c('input', {
+	      directives: [{
+	        name: "model",
+	        rawName: "v-model",
+	        value: (driver.name),
+	        expression: "driver.name"
+	      }],
+	      attrs: {
+	        "type": "text"
+	      },
+	      domProps: {
+	        "value": _vm._s(driver.name)
+	      },
+	      on: {
+	        "blur": function($event) {
+	          _vm.trySave(driver)
+	        },
+	        "input": function($event) {
+	          if ($event.target.composing) { return; }
+	          driver.name = $event.target.value
+	        }
+	      }
+	    })]), _vm._v(" "), _c('td', [_c('input', {
+	      directives: [{
+	        name: "model",
+	        rawName: "v-model",
+	        value: (driver.telephone),
+	        expression: "driver.telephone"
+	      }],
+	      attrs: {
+	        "type": "tel"
+	      },
+	      domProps: {
+	        "value": _vm._s(driver.telephone)
+	      },
+	      on: {
+	        "blur": function($event) {
+	          _vm.trySave(driver)
+	        },
+	        "input": function($event) {
+	          if ($event.target.composing) { return; }
+	          driver.telephone = $event.target.value
+	        }
+	      }
+	    })]), _vm._v(" "), _c('td', [_c('button', {
+	      staticClass: "btn btn-default",
+	      attrs: {
+	        "type": "button"
+	      },
+	      on: {
+	        "click": function($event) {
+	          _vm.deleteDriver(driver)
+	        }
+	      }
+	    }, [_c('i', {
+	      staticClass: "glyphicon glyphicon-minus"
+	    })])])])
+	  })), _vm._v(" "), _c('tfoot', [_c('tr', [_c('td', {
+	    attrs: {
+	      "colspan": "2"
+	    }
+	  }, [_c('button', {
+	    staticClass: "btn btn-default",
+	    attrs: {
+	      "type": "button"
+	    },
+	    on: {
+	      "click": _vm.addDriver
+	    }
+	  }, [_c('i', {
+	    staticClass: "glyphicon glyphicon-plus"
+	  })])])])])], 1)])])
+	},staticRenderFns: []}
+	module.exports.render._withStripped = true
+	if (false) {
+	  module.hot.accept()
+	  if (module.hot.data) {
+	     require("vue-hot-reload-api").rerender("data-v-582651b0", module.exports)
+	  }
+	}
+
+/***/ },
+/* 495 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._c;
+	  return _c('div', [_c('div', [(!_vm.user) ? [_c('button', {
 	    on: {
 	      "click": _vm.login
 	    }
-	  }, [_vm._v("\n      Login\n    ")])]) : _c('div', [_vm._v("\n    Logged in as " + _vm._s(_vm.user.email) + "\n    "), _c('button', {
+	  }, [_vm._v("\n        Login\n      ")])] : [_vm._v("\n      Logged in as " + _vm._s(_vm.user.email) + "\n      "), _c('button', {
 	    on: {
 	      "click": _vm.logout
 	    }
-	  }, [_vm._v("\n      Logout\n    ")])]), _vm._v(" "), _c('div', {
+	  }, [_vm._v("\n        Logout\n      ")])], _vm._v(" "), _c('div', {
+	    staticClass: "management-tools"
+	  }, [_c('button', {
+	    staticClass: "btn btn-link",
+	    on: {
+	      "click": function($event) {
+	        _vm.showDriversDialog = true
+	      }
+	    }
+	  }, [_vm._v("\n        Manage Drivers\n      ")])])], 2), _vm._v(" "), _c('div', {
 	    staticClass: "r"
 	  }, [_c('div', {
 	    staticClass: "c"
@@ -54086,7 +57061,7 @@
 	    }
 	  })], 1)]), _vm._v(" "), _c('table', {
 	    staticClass: "table table-striped-custom"
-	  }, [_c('thead', [_c('tr', [_c('th'), _vm._v(" "), _c('th', {
+	  }, [_c('thead', [_c('tr', [_c('th', {
 	    staticClass: "sortable",
 	    class: {
 	      active: _vm.orderBy == 'createdAt'
@@ -54106,24 +57081,48 @@
 	        _vm.toggleOrder('pickupTime')
 	      }
 	    }
-	  }, [_vm._v("Pickup Time")]), _vm._v(" "), _c('th', [_vm._v("Patient Details")]), _vm._v(" "), _c('th', [_vm._v("Pickup Location")]), _vm._v(" "), _c('th', [_vm._v("Drop-off Location")]), _vm._v(" "), _c('th', [_vm._v("One/Two-Way")]), _vm._v(" "), _c('th', [_vm._v("Wheelchair Stretcher")]), _vm._v(" "), _c('th', [_vm._v("Oxygen Rate")]), _vm._v(" "), _c('th', [_vm._v("Patient Weight")]), _vm._v(" "), _c('th', [_vm._v("Contact Person & Details ")]), _vm._v(" "), _c('th', [_vm._v("Precautions")]), _vm._v(" "), _c('th', [_vm._v("Accompanying Passengers")]), _vm._v(" "), _c('th', [_vm._v("Appointment Time")]), _vm._v(" "), _c('th', [_vm._v("Cancel")]), _vm._v(" "), _c('th')])]), _vm._v(" "), _c('tbody', [_vm._l((_vm.sortedBookings), function(booking, index) {
+	  }, [_vm._v("Pickup Time")]), _vm._v(" "), _c('th', [_vm._v("Patient Details")]), _vm._v(" "), _c('th', [_vm._v("Pickup Location")]), _vm._v(" "), _c('th', [_vm._v("Drop-off Location")]), _vm._v(" "), _c('th', [_vm._v("One/Two-Way")]), _vm._v(" "), _c('th', [_vm._v("Wheelchair Stretcher")]), _vm._v(" "), _c('th', [_vm._v("Oxygen Rate")]), _vm._v(" "), _c('th', [_vm._v("Patient Weight")]), _vm._v(" "), _c('th', [_vm._v("Contact Person & Details ")]), _vm._v(" "), _c('th', [_vm._v("Precautions")]), _vm._v(" "), _c('th', [_vm._v("Accompanying Passengers")]), _vm._v(" "), _c('th', [_vm._v("Appointment Time")]), _vm._v(" "), _c('th', [_c('button', {
+	    staticClass: "btn-xs btn",
+	    on: {
+	      "click": _vm.markAllRead
+	    }
+	  }, [_vm._v("Mark all"), _c('br'), _vm._v(" as Read")])]), _vm._v(" "), _c('th', [_vm._v("SMS")]), _vm._v(" "), _c('th', [_vm._v("Cancel")]), _vm._v(" "), _c('th')])]), _vm._v(" "), _c('tbody', [_vm._l((_vm.sortedBookings), function(booking, index) {
 	    return [_c('tr', {
 	      key: booking.id + '-first',
 	      class: {
 	        cancelled: booking.cancelled, read: booking.read, 'is-odd': (index % 2)
 	      }
 	    }, [_c('td', {
-	      staticClass: "read-cell",
+	      attrs: {
+	        "title": _vm.formatTime(booking.createdAt)
+	      }
+	    }, [_vm._v("\n            " + _vm._s(_vm.formatTimePast(booking.createdAt, _vm.now)) + " ago\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n              " + _vm._s(_vm.filters.formatTime(booking.pickupTime)) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.patientName) + ","), _c('br'), _vm._v("\n            " + _vm._s(booking.patientGender) + "\n            (" + _vm._s(booking.patientNric) + ")\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.pickupLocation) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.dropoffLocation) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.twoWay) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.wheelchairStretcher) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.oxygenRate) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.patientWeight) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.contactPerson) + "\n            " + _vm._s(booking.contactPhone) + "\n            " + _vm._s(booking.contactEmail) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.precautions) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.accompanyingPassengers) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.appointmentTime) + "\n          ")]), _vm._v(" "), _c('td', [_c('button', {
+	      class: {
+	        btn: true,
+	          'btn-link': booking.read,
+	      },
 	      on: {
 	        "click": function($event) {
 	          _vm.read(booking, !booking.read)
 	        }
 	      }
-	    }, [_vm._v("\n            " + _vm._s(booking.read ? '\u00a0' : '\u2709') + "\n          ")]), _vm._v(" "), _c('td', {
-	      attrs: {
-	        "title": _vm.formatTime(booking.createdAt)
+	    }, [_vm._v("\n              " + _vm._s(booking.read ? '\u2713' : '\u2709') + "\n            ")])]), _vm._v(" "), _c('td', [_c('button', {
+	      staticClass: "btn btn-default btn-sm",
+	      on: {
+	        "click": function($event) {
+	          _vm.sms(booking)
+	        }
 	      }
-	    }, [_vm._v("\n            " + _vm._s(_vm.formatTimePast(booking.createdAt, _vm.now)) + " ago\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n              " + _vm._s(_vm.filters.formatTime(booking.pickupTime)) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.patientName) + ","), _c('br'), _vm._v("\n            " + _vm._s(booking.patientGender) + "\n            (" + _vm._s(booking.patientNric) + ")\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.pickupLocation) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.dropoffLocation) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.twoWay) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.wheelchairStretcher) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.oxygenRate) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.patientWeight) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.contactPerson) + "\n            " + _vm._s(booking.contactPhone) + "\n            " + _vm._s(booking.contactEmail) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.precautions) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.accompanyingPassengers) + "\n          ")]), _vm._v(" "), _c('td', [_vm._v("\n            " + _vm._s(booking.appointmentTime) + "\n          ")]), _vm._v(" "), _c('td', [_c('label', [_c('input', {
+	    }, [_vm._v("\n              💬\n            ")]), _vm._v(" "), _c('br'), _vm._v(" "), _c('br'), _vm._v(" "), (booking.messages) ? _c('button', {
+	      staticClass: "btn btn-default btn-sm",
+	      on: {
+	        "click": function($event) {
+	          _vm.smsLogBooking = booking
+	        }
+	      }
+	    }, [_c('i', {
+	      staticClass: "glyphicon glyphicon-list-alt"
+	    })]) : _vm._e()]), _vm._v(" "), _c('td', [_c('label', [_c('input', {
 	      directives: [{
 	        name: "model",
 	        rawName: "v-model",
@@ -54261,17 +57260,36 @@
 	        }
 	      }
 	    }, [_vm._v("\n              Delete scribbles\n            ")])])]) : _vm._e()]
-	  })], 2)]), _vm._v(" "), _c('reply-dialogue', {
+	  })], 2)]), _vm._v(" "), (_vm.smsBooking) ? _c('sms-dialog', {
 	    attrs: {
-	      "open": _vm.replyDialogueOpen,
-	      "booking": _vm.currentBooking
+	      "open": !!_vm.smsBooking,
+	      "booking": _vm.smsBooking
 	    },
 	    on: {
 	      "close": function($event) {
-	        _vm.replyDialogueOpen = false
+	        _vm.smsBooking = null
+	      },
+	      "sent-sms": _vm.saveSMS
+	    }
+	  }) : _vm._e(), _vm._v(" "), (_vm.smsLogBooking) ? _c('sms-log-dialog', {
+	    attrs: {
+	      "booking": _vm.smsLogBooking
+	    },
+	    on: {
+	      "close": function($event) {
+	        _vm.smsLogBooking = null
 	      }
 	    }
-	  })], 1)
+	  }) : _vm._e(), _vm._v(" "), (_vm.showDriversDialog) ? _c('drivers-dialog', {
+	    attrs: {
+	      "open": _vm.showDriversDialog
+	    },
+	    on: {
+	      "close": function($event) {
+	        _vm.showDriversDialog = false
+	      }
+	    }
+	  }) : _vm._e()], 1)
 	},staticRenderFns: []}
 	module.exports.render._withStripped = true
 	if (false) {
