@@ -56866,7 +56866,6 @@
 	//
 	//
 	//
-	//
 
 /***/ },
 /* 494 */
@@ -56881,7 +56880,7 @@
 	    }
 	  }, [_c('div', {
 	    slot: "title"
-	  }, [_vm._v("\n    Manage drivers\n  ")]), _vm._v(" "), _c('div', {
+	  }, [_vm._v("\n    Manage Phone Numbers\n  ")]), _vm._v(" "), _c('div', {
 	    slot: "footer"
 	  }, [_c('button', {
 	    staticClass: "btn btn-default",
@@ -56893,7 +56892,7 @@
 	        _vm.$emit('close')
 	      }
 	    }
-	  }, [_vm._v("Close")])]), _vm._v(" "), _c('div', [_vm._v("\n    Drivers:\n    "), _c('table', {
+	  }, [_vm._v("Close")])]), _vm._v(" "), _c('div', [_c('table', {
 	    staticClass: "table table-striped"
 	  }, [_c('thead', [_c('tr', [_c('th', [_vm._v("Name")]), _vm._v(" "), _c('th', [_vm._v("Driver")]), _vm._v(" "), _c('th')])]), _vm._v(" "), _c('tbody', _vm._l((_vm.combinedDrivers), function(driver) {
 	    return _c('tr', {
@@ -57004,7 +57003,7 @@
 	        _vm.showDriversDialog = true
 	      }
 	    }
-	  }, [_vm._v("\n        Manage Drivers\n      ")])])], 2), _vm._v(" "), _c('div', {
+	  }, [_vm._v("\n        Manage Phone Numbers\n      ")])])], 2), _vm._v(" "), _c('div', {
 	    staticClass: "r"
 	  }, [_c('div', {
 	    staticClass: "c"
