@@ -16,7 +16,7 @@
 
       <div class="management-tools">
         <button class="btn btn-link" @click="showDriversDialog = true">
-          Manage Drivers
+          Manage Phone Numbers
         </buton>
       </div>
     </div>

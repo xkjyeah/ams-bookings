@@ -1,13 +1,12 @@
 <template>
   <dialog-base @close="$emit('close')">
     <div slot="title">
-      Manage drivers
+      Manage Phone Numbers
     </div>
     <div slot="footer">
       <button type="button" @click="$emit('close')"  class="btn btn-default">Close</button>
     </div>
     <div>
-      Drivers:
       <table class="table table-striped">
         <thead>
           <tr>
