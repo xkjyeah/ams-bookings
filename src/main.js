@@ -7,7 +7,7 @@ import * as filters from './utils/filters'
 import moment from 'moment';
 import assert from 'assert';
 
- firebase.initializeApp({
+firebase.initializeApp({
     apiKey: "AIzaSyDsiq9OIO0yTi2cgLbAjiTtWdKmo7HNBPE",
     authDomain: "ams-bookings.firebaseapp.com",
     databaseURL: "https://ams-bookings.firebaseio.com",

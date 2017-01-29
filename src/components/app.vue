@@ -1,16 +1,26 @@
 <template>
   <div>
-    <div v-if="!user">
-      <button @click="login">
-        Login
-      </button>
+    <div>
+      <template v-if="!user">
+        <button @click="login">
+          Login
+        </button>
+      </template>
+      <template v-else>
+        Logged in as {{user.email}}
+        <button @click="logout">
+          Logout
+        </button>
+      </template>
+
+
+      <div class="management-tools">
+        <button class="btn btn-link" @click="showDriversDialog = true">
+          Manage Drivers
+        </buton>
+      </div>
     </div>
-    <div v-else>
-      Logged in as {{user.email}}
-      <button @click="logout">
-        Logout
-      </button>
-    </div>
+
     <div class="r">
       <div class="c">
         <h2>Date Range</h2>
@@ -41,7 +51,6 @@
     <table class="table table-striped-custom">
       <thead>
         <tr>
-          <th></th>
           <th class="sortable" :class="{active: orderBy == 'createdAt'}" @click="toggleOrder('createdAt')">Created At</th>
           <th class="sortable" :class="{active: orderBy == 'pickupTime'}" @click="toggleOrder('pickupTime')">Pickup Time</th>
           <th>Patient Details</th>
@@ -59,6 +68,8 @@
 
           <th>Accompanying Passengers</th>
           <th>Appointment Time</th>
+          <th><button class="btn-xs btn" @click="markAllRead">Mark all<br/> as Read</button></th>
+          <th>SMS</th>
           <th>Cancel</th>
           <th></th>
 
@@ -68,9 +79,6 @@
         <template v-for="(booking, index) in sortedBookings">
           <tr :class="{cancelled: booking.cancelled, read: booking.read, 'is-odd': (index % 2)}"
               :key="booking.id + '-first'">
-            <td @click="read(booking, !booking.read)" class="read-cell">
-              {{booking.read ? '\u00a0' : '\u2709'}}
-            </td>
             <td :title="formatTime(booking.createdAt)">
               {{formatTimePast(booking.createdAt, now)}} ago
             </td>
@@ -117,6 +125,29 @@
             </td>
             <td>
               {{booking.appointmentTime}}
+            </td>
+
+            <td>
+              <button @click="read(booking, !booking.read)" :class="{
+                btn: true,
+                'btn-link': booking.read,
+                }">
+                {{booking.read ? '\u2713' : '\u2709'}}
+              </button>
+            </td>
+
+            <td>
+              <button @click="sms(booking)"
+                class="btn btn-default btn-sm">
+                💬
+              </button>
+
+              <br/>
+              <br/>
+              <button v-if="booking.messages" @click="smsLogBooking = booking"
+                class="btn btn-default btn-sm">
+                <i class="glyphicon glyphicon-list-alt"></i>
+              </button>
             </td>
 
             <td>
@@ -257,9 +288,18 @@
         </template>
       </tbody>
     </table>
-    <reply-dialogue :open="replyDialogueOpen"
-      :booking="currentBooking"
-      @close="replyDialogueOpen=false"></reply-dialogue>
+    <sms-dialog :open="!!smsBooking"
+      v-if="smsBooking"
+      :booking="smsBooking"
+      @close="smsBooking = null"
+      @sent-sms="saveSMS"></sms-dialog>
+    <sms-log-dialog
+      v-if="smsLogBooking"
+      :booking="smsLogBooking"
+      @close="smsLogBooking = null"></sms-log-dialog>
+    <drivers-dialog :open="showDriversDialog"
+      v-if="showDriversDialog"
+      @close="showDriversDialog = false"></drivers-dialog>
   </div>
 </template>
 <script>
@@ -267,7 +307,6 @@ import moment from 'moment';
 import _ from 'lodash';
 import * as firebase from 'firebase';
 import DisplayWithScribbles from './display-with-scribbles.vue';
-import ReplyDialog from './dialogue.vue';
 import Calendar from './calendar.vue';
 import * as filters from '../utils/filters'
 import assert from 'assert';
@@ -276,7 +315,9 @@ export default {
   components: {
     DisplayWithScribbles,
     DatePicker: Calendar,
-    ReplyDialogue: ReplyDialog
+    SmsDialog: require('./sms-dialog.vue'),
+    SmsLogDialog: require('./sms-log-dialog.vue'),
+    DriversDialog: require('./drivers-dialog.vue'),
   },
   data() {
     return {
@@ -285,8 +326,8 @@ export default {
       query: null,
 
       bookings: [],
-      currentBooking: null,
-      replyDialogueOpen: false,
+      smsBooking: null,
+      smsLogBooking: null,
       filterBy: 'pickupTime',
       orderBy: 'pickupTime',
       order: 'asc',
@@ -299,6 +340,8 @@ export default {
 
       dateRangeType: 'future',
       dateRange: null,
+
+      showDriversDialog: false,
     }
   },
   computed: {
@@ -386,6 +429,13 @@ export default {
       firebase.auth().signOut();
       gapi.auth2.getAuthInstance().signOut();
     },
+    markAllRead() {
+      if (confirm("Are you sure you want to mark all as read?")) {
+        for (let booking of this.bookings) {
+          this.read(booking, true)
+        }
+      }
+    },
     read(booking, result) {
       booking.read = result;
 
@@ -416,9 +466,8 @@ export default {
         })
       }
     },
-    reply(booking){
-      this.currentBooking=booking;
-      this.replyDialogueOpen=true;
+    sms(booking){
+      this.smsBooking=booking;
     },
     toggleOrder(column) {
       if (this.orderBy === column) {
@@ -481,6 +530,12 @@ export default {
         console.log(response);
         //window.location.href = response.htmlLink;
       })
+    },
+    saveSMS(result) {
+      let node = firebase.database().ref('bookings').child(result.booking.id)
+        .child('messages');
+      let key = node.push().key;
+      return node.child(key).update(_.pick(result, ['to', 'body']))
     }
   },
   created() {
@@ -534,10 +589,6 @@ export default {
       }
     }
   }
-  td.read-cell:hover {
-    background-color: #DDD;
-    cursor: pointer;
-  }
 }
 
 .r {
@@ -549,5 +600,8 @@ export default {
 }
 .date-range-type {
   width: 10em;
+}
+.management-tools {
+  float: right;
 }
 </style>
