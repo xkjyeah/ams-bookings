@@ -77,7 +77,12 @@
       </thead>
       <tbody>
         <template v-for="(booking, index) in sortedBookings">
-          <tr :class="{cancelled: booking.cancelled, read: booking.read, 'is-odd': (index % 2)}"
+          <tr :class="{
+            cancelled: booking.cancelled,
+            read: booking.read,
+            'is-odd': (index % 2),
+            untrusted: booking.untrusted
+          }"
               :key="booking.id + '-first'">
             <td :title="formatTime(booking.createdAt)">
               {{formatTimePast(booking.createdAt, now)}} ago
@@ -333,6 +338,7 @@ export default {
       order: 'asc',
       now: null,
       today: null,
+      trustedUsers: [],
 
       filters: {
         ...filters
@@ -368,6 +374,8 @@ export default {
             booking.read = booking.read || false;
             booking.cancelled = booking.cancelled || false;
             booking.scribbles = booking.scribbles || null;
+
+            booking.untrusted = !this.isTrusted(booking.contactEmail)
             return booking
           })
           .value();
@@ -388,7 +396,22 @@ export default {
       this.today = new Date().setHours(0,0,0,0);
       this.now = Date.now();
     },
+    isTrusted(testEmail) {
+      const rv = this.trustedUsers.find(email => {
+        if (email.startsWith('@')) {
+          return testEmail.endsWith(email)
+        } else {
+          return email.toLowerCase() == testEmail.toLowerCase()
+        }
+      })
+      return rv;
+    },
     reload(){
+      var trusted = firebase.database().ref('users')
+        .once('value', (v) => {
+          this.trustedUsers = _.values(v.val()).map(x => x.email);
+        })
+
       var query = firebase.database().ref('bookings')
         .orderByChild(this.filterBy)
 
@@ -572,6 +595,11 @@ export default {
 .table.table-striped-custom tbody {
   tr.is-odd {
     background-color: rgb(224, 247, 250);
+  }
+  tr.untrusted {
+    td {
+      background-color: #FFF0E8;
+    }
   }
   tr:not(.read) td {
     font-weight: bold;
