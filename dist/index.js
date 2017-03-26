@@ -36178,7 +36178,7 @@
 	
 	
 	// module
-	exports.push([module.id, "\n.table.table-striped-custom thead tr {\n  background-color: #4dd0e1;\n}\n.table.table-striped-custom thead tr td {\n    color: black;\n}\n.table.table-striped-custom thead tr th.sortable:hover {\n    background-color: #DDD;\n}\n.table.table-striped-custom tbody tr.is-odd {\n  background-color: #e0f7fa;\n}\n.table.table-striped-custom tbody tr:not(.read) td {\n  font-weight: bold;\n  font-style: italic;\n}\n.table.table-striped-custom tbody tr td {\n  color: black;\n}\n.table.table-striped-custom tbody tr.cancelled td {\n  text-decoration: line-through;\n  color: #888;\n}\n.r {\n  flex-direction: row;\n  display: inline-flex;\n}\n.r .c {\n    flex: 0 0 auto;\n}\n.date-range-type {\n  width: 10em;\n}\n.management-tools {\n  float: right;\n}\n", ""]);
+	exports.push([module.id, "\n.table.table-striped-custom thead tr {\n  background-color: #4dd0e1;\n}\n.table.table-striped-custom thead tr td {\n    color: black;\n}\n.table.table-striped-custom thead tr th.sortable:hover {\n    background-color: #DDD;\n}\n.table.table-striped-custom tbody tr.is-odd {\n  background-color: #e0f7fa;\n}\n.table.table-striped-custom tbody tr.untrusted td {\n  background-color: #FFF0E8;\n}\n.table.table-striped-custom tbody tr:not(.read) td {\n  font-weight: bold;\n  font-style: italic;\n}\n.table.table-striped-custom tbody tr td {\n  color: black;\n}\n.table.table-striped-custom tbody tr.cancelled td {\n  text-decoration: line-through;\n  color: #888;\n}\n.r {\n  flex-direction: row;\n  display: inline-flex;\n}\n.r .c {\n    flex: 0 0 auto;\n}\n.date-range-type {\n  width: 10em;\n}\n.management-tools {\n  float: right;\n}\n", ""]);
 	
 	// exports
 
@@ -36807,6 +36807,11 @@
 	//
 	//
 	//
+	//
+	//
+	//
+	//
+	//
 	
 	var _moment = __webpack_require__(315);
 	
@@ -36862,6 +36867,7 @@
 	      order: 'asc',
 	      now: null,
 	      today: null,
+	      trustedUsers: [],
 	
 	      filters: _extends({}, filters), /* Convenience methods */
 	
@@ -36900,6 +36906,8 @@
 	          booking.read = booking.read || false;
 	          booking.cancelled = booking.cancelled || false;
 	          booking.scribbles = booking.scribbles || null;
+	
+	          booking.untrusted = !_this.isTrusted(booking.contactEmail);
 	          return booking;
 	        }).value();
 	      });
@@ -36920,7 +36928,25 @@
 	      this.today = new Date().setHours(0, 0, 0, 0);
 	      this.now = Date.now();
 	    },
+	    isTrusted: function isTrusted(testEmail) {
+	      var rv = this.trustedUsers.find(function (email) {
+	        if (email.startsWith('@')) {
+	          return testEmail.endsWith(email);
+	        } else {
+	          return email.toLowerCase() == testEmail.toLowerCase();
+	        }
+	      });
+	      return rv;
+	    },
 	    reload: function reload() {
+	      var _this3 = this;
+	
+	      var trusted = firebase.database().ref('users').once('value', function (v) {
+	        _this3.trustedUsers = _lodash2.default.values(v.val()).map(function (x) {
+	          return x.email;
+	        });
+	      });
+	
 	      var query = firebase.database().ref('bookings').orderByChild(this.filterBy);
 	
 	      if (this.dateRangeType === 'future') {
@@ -36943,7 +36969,7 @@
 	      this.query = query;
 	    },
 	    login: function login() {
-	      var _this3 = this;
+	      var _this4 = this;
 	
 	      var authInstance = gapi.auth2.getAuthInstance();
 	
@@ -36953,7 +36979,7 @@
 	        var authInstance = gapi.auth2.getAuthInstance();
 	        var user = authInstance.currentUser.get();
 	
-	        _this3.credential = {
+	        _this4.credential = {
 	          accessToken: user.getAuthResponse().access_token
 	        };
 	      });
@@ -37085,14 +37111,14 @@
 	    }
 	  },
 	  created: function created() {
-	    var _this4 = this;
+	    var _this5 = this;
 	
 	    this.updateMonth();
 	
 	    gapiPromise.then(function () {
 	      var resp = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse();
 	
-	      _this4.credential = {
+	      _this5.credential = {
 	        accessToken: resp.access_token
 	      };
 	    });
@@ -57089,7 +57115,10 @@
 	    return [_c('tr', {
 	      key: booking.id + '-first',
 	      class: {
-	        cancelled: booking.cancelled, read: booking.read, 'is-odd': (index % 2)
+	        cancelled: booking.cancelled,
+	          read: booking.read,
+	          'is-odd': (index % 2),
+	          untrusted: booking.untrusted
 	      }
 	    }, [_c('td', {
 	      attrs: {
